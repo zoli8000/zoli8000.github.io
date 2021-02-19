@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title>ZoliDraw</title>
+	<link rel="stylesheet" type="text/css" href="stylesheet.css">
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>	
+	<script type="text/javascript" src="DumbZip.js"></script>	
+	<script type="text/javascript" src="ColorUtils.js"></script>	
+	<script type="text/javascript" src="pixelfont.js"></script>		
+	<script type="text/javascript" src="drawMain.js"></script>		
+</head>
+
+<body onload="startDraw()">
+	<div class="menubar">
+		<ul>
+		<li>HOME</li>
+		<li>FILE</li>
+		<li>HELP</li>
+		</ul>
+	</div>
+	<div class="center-block">				
+		<div  class="tools">
+			<ul>
+				<li onclick="arrowSet()" class="icons"><canvas id=arrow></canvas></li>
+				<li onclick="pickerSet()" class="icons"><canvas id=picker></canvas></li>
+				<li onclick="dotSet()" class="icons"><canvas id=dot></canvas></li>				
+				<li onclick="lineSet()" class="icons"><canvas id=line></canvas></li>				
+				<li>Erase</li>				
+				<li onclick="drawMapping()">Mapping</li>				
+				<li><img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Crystal_Clear_action_editcopy.png" /></li>
+				<li onclick="magnifyAll(2)" class="icons"><canvas id=magnp></canvas></li>
+				<li onclick="magnifyAll(1)" class="icons"><canvas id=magnm></canvas></li>
+				<li onclick="convertImage()" class="icons"><canvas id=convert></canvas></li>
+				<li onclick="exportAnsi()" class="icons"><canvas id=export></canvas></li>
+				<li onclick="importAnsi()" class="icons"><canvas id=import></canvas></li>				
+				<li onclick="switchGrid()" class="icons"><canvas id=grid></canvas></li>								
+			</ul>
+			<img id="menupng" src="menu.png" style="visible:true">
+		</div>		
+		<div class="paint-area" id="paint-area">					
+			<div class="paint-ar-abs">
+				<canvas id="p-pixel" class="paint-style paint-box" width="640" height="400"></canvas>
+				<canvas id="p-image" class="paint-style" width="640" height="400"></canvas> 
+				<canvas id="p-grid" class="paint-style" width="640" height="400"></canvas>									
+				<div id="cursor"></div>
+			</div>
+		</div>
+		
+		<div id="info-area" class="info-head" >
+			<div class="info-head-border">Current</div>
+			<div class="info-container">			
+				<ul>
+					<li class="large">Ascii<p></p><canvas id="inf-cur" class="pixelated" width="8" height="16"></canvas></li>
+					<li class="large tooltip">Image<p></p><canvas id="inf-img" class="pixelated" width="8" height="16"></canvas><span class="tooltiptext" id="imageinf">Info</span></li>			
+					<li class="large">BG/FG<p></p><canvas id="inf-BFC" class="pixelated" width="32" height="64"></canvas></li>
+				</ul>
+				<div></div>
+				<ul id="color-map" class="info-menu"></ul>
+				<ul id="ascii-map" class="info-menu"></ul>
+			</div>
+					
+			<div class="info-head" id="info-col">
+				<div class="info-head-border">
+					Colors
+					<div class="small-menu">
+						<a href="#" onclick="setToolSize(0,1)">&nbsp;&#x2809;&nbsp;</a>
+						<a href="#" onclick="setToolSize(0,2)">&nbsp;&#x281B;&nbsp;</a>
+						<a href="#" onclick="setToolSize(0,3)">&nbsp;&#x283F;&nbsp;</a>
+						<a href="#" onclick="setToolSize(0,0)">&nbsp;&#x2a2f;&nbsp;</a>
+					</div>
+				</div>
+				<ul class="rec-list">	
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+				</ul>
+			</div>
+			<div class="info-head" id="info-pat">
+				<div class="info-head-border">
+					Patterns
+					<div class="small-menu">
+						<a href="#" onclick="setToolSize(1,1)">&nbsp;&#x2809;&nbsp;</a>
+						<a href="#" onclick="setToolSize(1,2)">&nbsp;&#x281B;&nbsp;</a>
+						<a href="#" onclick="setToolSize(1,3)">&nbsp;&#x283F;&nbsp;</a>
+						<a href="#" onclick="setToolSize(1,0)">&nbsp;&#x2a2f;&nbsp;</a>
+					</div>
+				</div>
+				<ul class="rec-list">	
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+				</ul>
+			</div>
+			<div class="info-head" id="info-nbr">
+				<div class="info-head-border">
+					Neighbors
+					<div class="small-menu">
+						<a href="#" onclick="setToolSize(2,1)">&nbsp;&#x2809;&nbsp;</a>
+						<a href="#" onclick="setToolSize(2,2)">&nbsp;&#x281B;&nbsp;</a>
+						<a href="#" onclick="setToolSize(2,3)">&nbsp;&#x283F;&nbsp;</a>
+						<a href="#" onclick="setToolSize(2,0)">&nbsp;&#x2a2f;&nbsp;</a>
+					</div>
+				</div>
+				<ul class="rec-list">	
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+					<li>Rec #x<p>00%</p><canvas class="pixelated" width="8" height="16"></canvas></li>
+				</ul>
+			</div>
+			
+		</div>
+		<div>
+			<ul class="paint-menu">
+				<li><input type="checkbox" id="chk1"  checked="checked" /><label title="Draw area" for="chk1">Draw area</label></li>
+				<li><input type="range" max="100" onchange="setLayerTransp(this)"/></li>
+				<li><input type="checkbox" id="chk2" /><label title="Image" for="chk2">Image</label></li>
+				<li><input type="file" id="file-open" onchange="openImage(this)"/></li>
+			</ul>
+		</div>
+		
+	</div>
+	<div id="valid-chars">	
+		<select id="valid-sel" name="valids"></select>	
+		<div><canvas id="font-canv" width="256" height="128"></canvas></div>
+	</div>
+	<!-- <p id="chset"></p> */ -->
+	<input type="text" value="" id="ioText">
+</body>
+
+</html>

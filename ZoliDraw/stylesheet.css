@@ -1,0 +1,308 @@
+
+html, body {
+	width: 90%;
+	height: 90%;
+	margin: 0 0 0 0;		
+	padding: 0 0 0 0;
+	overflow: hidden;
+	}
+
+.center-block {
+	width: 1000px;
+	display: grid;
+	grid-template-columns: 100px 640px 400px auto;
+	grid-template-rows: 400px auto;
+
+	grid-gap: 10px;
+	background-color: red;
+}
+
+.paint-area > * {
+	pointer-events: none;
+}
+
+.icons > canvas {	
+	pointer-events: none;		
+}
+
+.icons:hover {		
+	filter: saturate(0.7) contrast(1.5);
+	animation: cursor-anim 2s linear 0s infinite alternate;		
+	transition: all 0.2s linear;
+}
+	
+.menubar {
+	height: 30px;
+	width: 100%;
+	background-color: yellow;
+}
+
+.menubar > ul > li {
+	height: 25px;
+	display: inline-block;
+	background-color: green;
+	margin: 0 0 0 0;
+	padding: 2px 20px 2px 20px;		
+	color: white;
+	
+	}
+.menubar >ul > li:hover {		curErr
+	background-color: lightgreen;				
+	}
+	
+.tools {		
+	height: 400px;
+	width: 100px;
+	margin: 0;
+	padding: 0;		
+	display: inline-block;			
+}
+
+ul, .tools > ul, .info-area > ul  {
+	margin: 0;
+	padding: 0;		
+	display: inline-block;		
+	list-style-type: none;	
+}
+
+.tools > ul > li {
+	width: 40px;
+	height: 40px;
+	display: inline-block;	
+	background-color: lightblue;		
+	border: solid black 1px;
+	margin: 1px 0px 0px 1px;
+	padding: 0;
+	word-wrap: break-word;
+	overflow: hidden;
+}
+.tools > ul > li > img {		
+	max-width:45px;
+	max-height:45px;		
+	width: auto;
+	height: auto;
+}
+.tools > ul > li:hover {		
+	background-color: white;				
+	}
+.paint-area {
+	width: 640px;
+	height: 400px;
+	display: inline-block;					
+	background-color:green;		
+	margin: 0;
+	padding: 0;
+	border: solid black 1px;
+	overflow: hidden;	
+}
+.paint-ar-abs {
+	position: absolute;
+}
+
+.paint-box {
+	background-color: green;	
+}
+
+.paint-style {
+	width: 640px;
+	height: 400px;			
+	margin: 0;
+	padding: 0;
+	border: none;	
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+.paint-menu {			
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;    
+	background-color: white;
+	width: 200px;
+	color: black;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+     
+    position: absolute;
+    z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.paint-menu > li {
+	margin: auto;		
+	display: inline-block;	
+}
+
+@keyframes cursor-anim {
+	from {border-color: white; transform: scale(1.0);}
+	25% {border-color: red;}
+	50% {border-color: green; transform: scale(1.5);}
+	75% {border-color: blue;}
+	to {border-color: black; transform: scale(1.5);}
+}
+
+#cursor {
+	border: dashed 2px white;				
+	animation: cursor-anim 2s linear 0s infinite alternate;		
+	transition: all 0.2s linear;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	width: 8px;
+	height: 16px;
+}
+
+#info-area {		
+	height: 400px;
+	width: 200px;
+	margin: 0;
+	padding: 0;		
+	display: inline-block;
+	background-color: yellow;	
+}
+
+.rec-list > li:not(.large)  {
+	width: 50px;
+	height: 70px;
+	display: inline-block;	
+	border: solid #444 1px;
+	overflow: hidden;
+	text-align: center;
+	font-size: 10px;
+	padding: 0;			
+	background-color:lightgrey;
+}
+.info-head-border {
+	background-color: #222;
+	color: #DDD;
+	border: solid #000 1px;
+	padding: 0 0 0 15px;
+	width: 165px;
+}
+.info-head {
+	font-family: Calibri, Ariel, Sans-serif;
+	background-color: #888;
+	width: 180px;
+	border: solid black 1px;
+}
+.info-head a {
+	color: inherit; 
+	text-decoration: inherit;	
+}
+
+.info-head a:hover {
+	background-color: #888;	
+}
+
+.info-container {
+		background-color: #AAA;
+		width: 170px;
+		height: 94px;
+		margin: 0 0 0 2px;
+		border: solid #444 1px;
+}
+	
+.large {
+		background-color: lightgrey;
+		width: 50px;
+		height: 90px;
+		display: inline-block;	
+		text-align: center;
+}
+
+
+#info-area p {
+	margin: 0;
+	padding: 0;
+}
+
+.small-menu {
+	display: inline-block;	
+	float: right;
+}
+
+.large > canvas{
+	width: 32px;
+	height: 64px;		
+	background-color: lightgreen;		
+	border: solid black 1px;
+	margin: 1px 0px 0px 1px;
+	padding: 0;	
+	image-rendering: pixelated;
+}
+
+.info-menu {
+	position:absolute;
+	display: inline-block;	
+	position:absolute;
+	width:150px;
+	background: #aaa;
+	padding: 0px 0px 0px 5px;
+	border: #888;
+	display: none;
+	z-index: 1;
+	
+}
+
+.info-menu > li {	
+	background:red;
+	display: inline-block;
+	border: solid black 1px;	
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+#color-map > li{
+	width: 32px;
+	height: 40px;
+}
+
+#ascii-map > li{
+	width: 8px;
+	height: 16px;
+}
+
+.info-menu > li:hover {	
+	animation: cursor-anim 2s linear 0s infinite alternate;	
+}
+
+.rec-list {
+	overflow: hidden;
+}
+
+.rec-list > li:not(.large) > canvas {
+	width: 16px;
+	height: 32px;		
+	background-color: lightgreen;		
+	border: solid black 1px;
+	margin: 1px 0px 0px 1px;
+	padding: 0;	
+}
+
+#font-canv {
+	width:384px;
+	height:192px;
+}
+
+.pixelated {
+	image-rendering: optimizeSpeed;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: -o-crisp-edges;
+	image-rendering: pixelated;
+	-ms-interpolation-mode: nearest-neighbor;  
+}
+
+#valid-chars {
+	background-color: purple;
+}
