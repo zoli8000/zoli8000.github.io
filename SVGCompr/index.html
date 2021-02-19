@@ -28,8 +28,8 @@
 			}
 			.container {
 				display: grid;  
-				row-gap: 20px;
-				column-gap: 20px;
+				row-gap: 40px;
+				column-gap: 40px;
 				grid-template-columns: 200px 200px 200px 200px;
 				grid-template-rows: auto;
 				grid-template-areas: 
@@ -50,37 +50,20 @@
 
 			// Init, functions
 			function init () {
-				decodeBox.value=decodeSVG.toString();
+				// SVG command list.
+				svgCommands='_XCcSsQqTtAaZMmLlHhVvZz-';
 
-				// Example SVG code
-				iteminp.value=String(`
-					_ <none> <fox #F90>
-					M 52 30 
-					L 42 28 
-					L 28 23 
-					L 27 20
-					L 17 5
-					L 14 14
-					L 1 8 
-					L 9 26 
-					L 21 39 
-					L 36 38 
-					Z
-					M20 16 a12 12 0 1 0 1 0
-					_ <none> <white #FFF>
-					M22 23 a4 4 0 1 0 1 0
-					M33 21 a4 4 0 1 0 1 0
-					M 26 38 
-					L 39 38 
-					L 21 32
-					Z
-					_ <none> <black #000>
-					M50 27 a2 2 0 1 0 1 0
-					M24 26 a2 2 0 1 0 1 0
-					M34 24 a2 2 0 1 0 1 0`).replace(/\t/g,"");
+				// Show decoder function, but remove comments and whitespaces
+
+				decodeBox.value=decodeSVG.toString().replace(/\s*\/\/.*$|[\t\r\n]+/gm,'').replace("l=23","l="+svgCommands.length);
+				
+				// Example SVG codes
+				fox = [' 89-lV/VP/I=/FF/9@/H`/^],!NTF 8:-R^/_]/MX,!OS<!ZQ< 8;!jU:!QT:![R:', 'fox #F90|white #FFF|black #000'];				
+				cat = [' 9:-J="LBELOS/[G"V>L9J=,-="BLS/yG"~>9=, 9;!j`V 8<!jfD 89!\\a<!xa< 9:-ec/oc/jg, 98-cj"engnjh"mnnmpj','black #000|pink #FDD|cat #EEE|white #FFF']
+				iteminp.value=readInput(cat);
 				convert(iteminp.value)
 			}
-
+			
 			convert = input => {
 				colors={'none': [0, '#']};
 				ev = function (str)  {
@@ -88,12 +71,11 @@
 					str = str.match(/[a-zA-Z]+/);
 					return colors[str][1];
 				}
-
-				// SVG command list.
-				svgCommands='_CcSsQqTtAaZMmLlHhVvZz-';
 				
 				l = svgCommands.length;
-					
+				// 358 -> 116+405 without circles
+				// 356 -> 
+
 				// Calculate compressed string
 				// Regex: 	m: 			full match
 				//			$0:			color token + color code
@@ -149,7 +131,8 @@
 
 					// Encode a number. n = 32 + (number of commands) + number
 					n=32+l+Math.round($n,0);					
-					
+					return String.fromCharCode(n);
+
 					// For larger numbers, split into two bytes. (Most probably won't be needed.)
 					if (n>=124) {
 						rem = n-124;
@@ -160,7 +143,7 @@
 
 					// For small numbers, return char(32 + (number of commands) + number)
 					{
-						return String.fromCharCode(n);
+						
 					}
 					
 					});
@@ -172,19 +155,77 @@
 				codeLabel.innerHTML = 'Code ('+ output.length + ' + '+ (decodeBox.value).length+' = ' + (output.length + (decodeBox.value).length) + ' bytes)';
 				
 				// Uncompressed SVG creator
-				svgText = input.replace(/(_) *( *<.+?>| *[0-9]+) *(<.+?>| *[0-9]+)([^_]*)/g, function (m, $com, $a, $b, $old) {
-					return `<path stroke="${ev($a)}" fill="${ev($b)}" d="${$old}"/>\n`;
+				C = []
+				svgText = input.replace(/(_) *( *<.+?>| *[0-9]+) *(<.+?>| *[0-9]+)([^_X]*)/g, function (m, $com, $a, $b, $old) {
+					if ($old.replace(/\s*/gm,'') != '') 
+						return `<path stroke="${C[0]=ev($a)}" fill="${C[1]=ev($b)}" d="${$old}"/>\n`;
+					else return '';
 				});					
+				// ToDo: handle colors. Invalid color codes, only uses the last block.
+				svgText = svgText.replace(/^\s*X\s*(\d+)\s*(\d+)\s*(\d+)\s*$/gm, `<circle stroke="${C[0]}" fill="${C[1]}" cx=$1 cy=$2 r=$3/>`);
 				svgBox.value=svgText;	
 				svgLabel.innerHTML = 'SVG Code ('+svgText.length+' bytes)';
 
 				// Try decompressing the SVG image, create a real, visible SVG from it.
-				s.innerHTML=decodeSVG(colBox.value, output);
-				
+				d = decodeSVG(colBox.value, output, l);
+				s.innerHTML=d;								
 				};
 
-			// Compact SVG decoder routine, in one line.
-			function decodeSVG(p,coded){l=23;p=p.split`#`;a=coded.split``.map(function(_){return _.charCodeAt(0)-32});r="";for(i=0;i<a.length;){c=a[i++];f=function(_){return _>31?'"url(#c'+_+')"':'"#'+p[_]+'"'};if(!c){r+='"/> <path stroke='+f(a[i++]-l)+" fill="+f(a[i++]-l)+' d="';continue}if(c<l)r+="_CcSsQqTtAaZMmLlHhVvZz-"[c];else if(c>=92)r+=Math.max(c-92,0)*96+a[i++]-l;else r+=c-l+" "}return r.slice(4)+'"/> '}
+			// readInput
+			function readInput(a) {
+				// Inits
+				let i = 0, txt = '', l=svgCommands.length; 
+				
+				// Color defs
+				c=['none'].concat(a[1].split('|'));
+
+				// Coded data
+				let s=a[0].split``.map(function(_){return _.charCodeAt(0)-32}); 
+				
+				while (i<s.length) {					
+					if (s[i]==0) txt += `\n\n_ <${c[s[++i]-l]}> <${c[s[++i]-l]}>`
+					else if (s[i]<l) txt+= '\n'+svgCommands[s[i]];
+					else txt += ` ${s[i]-l}`;
+					i++;
+				}
+				return txt;
+			}
+
+			// Compact SVG decoder routine ~500bytes.
+			function decodeSVG(p,coded,l=23){				
+				// 	Slice colors			
+				p=p.split`#`;
+
+				// Color holder
+				C=[];
+
+				// Get numbers from coded string, starting from 0 (ascii code - 32)
+				a=coded.split``.map(function(_){return _.charCodeAt(0)-32});
+				
+				// Start with empty string
+				r="";				
+			
+				// f is a function, returning an url... for 
+				f=function(_){return _>31?'"url(#c'+_+')"':'"#'+p[_]+'"'};
+				
+				// Color conversion - if '_' is used, get one color, otherwise use stored color
+				m=x=>c?C[x]:C[x]=f(a[i++]-l);
+				n=_=>(c=a[i++])-l+" ";
+
+				// Loop through the string
+				i=0;
+				while (i<a.length){										
+					// New SVG path					
+					c=a[i++]
+					if(c<2){
+						// Workaround to draw circles						
+						r+=`"/> <${["path","circle"][c]} stroke=${m(0)} fill=${m(1)}`;												
+						r+=(c==0)?' d="':`cx=${n()} cy=${n()} r=`+n();									
+						}
+					else if(c<l) r+="_XCcSsQqTtAaZMmLlHhVvZz-"[c]; else r+=c-l+" ";
+				}
+				return r.slice(4).replace("[\]","\\\\")+'"/> '
+			}
 
 		</script>
 	</head>
