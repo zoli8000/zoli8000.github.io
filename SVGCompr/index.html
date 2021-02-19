@@ -55,7 +55,7 @@
 
 				// Show decoder function, but remove comments and whitespaces
 
-				decodeBox.value=decodeSVG.toString().replace(/\s*\/\/.*$|[\t\r\n]+/gm,'').replace("l=23","l="+svgCommands.length);
+				decodeBox.value="_="+decodeSVG.toString().replace(/\s*\/\/.*$|[\t\r\n]+/gm,'').replace("l=23","l="+svgCommands.length);
 				
 				// Example SVG codes
 				fox = [' 89-lV/VP/I=/FF/9@/H`/^],!NTF 8:-R^/_]/MX,!OS<!ZQ< 8;!jU:!QT:![R:', 'fox #F90|white #FFF|black #000'];				
@@ -169,8 +169,7 @@
 				svgLabel.innerHTML = 'SVG Code ('+svgText.length+' bytes)';
 
 				// Try decompressing the SVG image, create a real, visible SVG from it.
-				d = decodeSVG(colBox.value, output, l);
-				console.log(d);
+				d = decodeSVG(colBox.value, output, l);				
 				s.innerHTML=d;								
 				};
 
@@ -195,38 +194,38 @@
 			}
 
 			// Compact SVG decoder routine ~500bytes.
-			function decodeSVG(p,coded,l=23){				
-				// 	Slice colors			
-				p=p.split`#`;
+			decodeSVG=(p,S,l=23,C=[],r="",i=0)=>{				
+				// p: palette
+				// S: string to be coded
+				// C: Color holder				
+				// l: number of commands
+				// r: result string
+				// i: counter
 
-				// Color holder
-				C=[];
+				// 	Slice colors			
+				p=p.split`#`
 
 				// Get numbers from coded string, starting from 0 (ascii code - 32)
-				a=coded.split``.map(function(_){return _.charCodeAt(0)-32});
-				
-				// Start with empty string
-				r="";				
+				a=S.split``.map(_=>_.charCodeAt(0)-32)
 			
 				// f is a function, returning an url... for 
 				// f=function(_){return _>31?'"url(#c'+_+')"':'"#'+p[_]+'"'};
-				f=function(_){return _==0?'"none"':`"#${p[_]}"`};
+				f=_=>_==0?'"none"':`"#${p[_]}"`
 				
 				// Color conversion - if '_' is used, get one color, otherwise use stored color
-				m=x=>c?C[x]:C[x]=f(a[i++]-l);
-				n=_=>(c=a[i++])-l+" ";
+				m=x=>c?C[x]:C[x]=f(a[i++]-l)
+				n=_=>(c=a[i++])-l+" "
 
-				// Loop through the string
-				i=0;
+				// Loop through the string				
 				while (i<a.length){										
 					// New SVG path					
 					c=a[i++]
 					if(c<2){
 						// Workaround to draw circles						
-						r+=`"/> <${["path","circle"][c]} stroke=${m(0)} fill=${m(1)}`;												
-						r+=(c==0)?' d="':`cx=${n()} cy=${n()} r=`+n();									
+						r+=`"/> <${["path","circle"][c]} stroke=${m(0)} fill=${m(1)}`
+						r+=c==0?'d="':`cx=${n()} cy=${n()} r=`+n()
 						}
-					else if(c<l) r+="_XCcSsQqTtAaZMmLlHhVvZz-"[c]; else r+=c-l+" ";
+					else if(c<l) r+="_XCcSsQqTtAaZMmLlHhVvZz-"[c];else r+=c-l+" "
 				}
 				return r.slice(4)+'"/> '
 			}
