@@ -1,0 +1,176 @@
+<html>
+<head>
+
+<style>
+.t {
+margin-top:-16px;
+margin-left:10px;
+pointer-events: none;
+}
+
+.item-input {
+  grid-area: input;
+}
+.item-palette {
+  grid-area: palette;
+}
+.item-code {
+  grid-area: code;
+}
+.item-svg {
+  grid-area: svg;
+}
+.item-decoder {
+  grid-area: decoder;
+}
+  
+.item-svgcode {
+  grid-area: svgcode;
+}
+.container {
+  display: grid;  
+  row-gap: 20px;
+  column-gap: 20px;
+  grid-template-columns: 200px 200px 200px 200px;
+  grid-template-rows: auto;
+  grid-template-areas: 
+    "input input palette palette"
+    "input input code code"
+    "svg decoder svgcode svgcode";
+}
+</style>
+
+<script>
+
+function init () {
+	decodeBox.value=decodeSVG.toString();
+	iteminp.value=String(`
+		_ <none> <fox #F90>
+		M 52 30 
+		L 42 28 
+		L 28 23 
+		L 27 20
+		L 17 5
+		L 14 14
+		L 1 8 
+		L 9 26 
+		L 21 39 
+		L 36 38 
+		Z
+		M20 16 a12 12 0 1 0 1 0
+		_ <none> <white #FFF>
+		M22 23 a4 4 0 1 0 1 0
+		M33 21 a4 4 0 1 0 1 0
+		M 26 38 
+		L 39 38 
+		L 21 32
+		Z
+		_ <none> <black #000>
+		M50 27 a2 2 0 1 0 1 0
+		M24 26 a2 2 0 1 0 1 0
+		M34 24 a2 2 0 1 0 1 0`).replace(/\t/g,"");
+	convert(iteminp.value)
+}
+
+convert = input => {
+	colors={'none': [0, '#']};
+	ev = function (str)  {
+		if (str[0]!='<') return str;
+		str = str.match(/[a-zA-Z]+/);
+		return colors[str][1];
+	}
+
+	svgCommands='_CcSsQqTtAaZMmLlHhVvZz-';
+	l = svgCommands.length;
+		
+	output = input.replace(/((?:\<)([a-zA-Z]+)( .+?)*(?:\>))|([a-zA-Z_-]+){1}|([0-9]+)|(.|\n)/g, 
+							function (m, $0, $coltok, $colval, $com, $n, $bad) {
+		if ($0!=undefined) {
+			//console.log('$0: '+$0, $0[0], $0[1]);
+			if ($coltok in colors) {
+				$n = colors[$coltok][0];
+			} else {
+				n = Object.keys(colors).length;
+				colors[$coltok]=[];
+				$n = colors[$coltok][0] = n;
+				colors[$coltok][1] = $colval.slice(1);
+				//console.log('Érték:'+$n);
+				// console.log($2, n);
+			}
+			colText=palette='';
+			for (k of Object.keys(colors)) {
+				palette += colors[k][1].toUpperCase();
+				//colText +='"'+colors[k][1]+'" -- '+colors[k][0]+', '+k+'\n'; 
+			}
+			colBox.value=palette.slice(1);//+'\n'+colText;
+		}
+		
+		// console.log(m, $0, $1, $2, $3);
+		if ($bad!=undefined) return '';
+		if ($com!=undefined) {
+			r='';
+			for (i=0; i<$com.length; i++) {
+				n = svgCommands.indexOf($com[i]);
+				if (n==-1) return '???';
+				r+= String.fromCharCode(n+32);
+				}
+			return r;
+		}
+		n=32+l+Math.round($n,0);
+		// 4 * 96
+		
+		if (n>=124) {
+			rem = n-124;
+			hi = ~~(rem/96);
+			lo = rem % 96;
+			return String.fromCharCode(124+hi)+String.fromCharCode(32+lo);
+		} else
+		{
+			return String.fromCharCode(n);
+		}
+		
+		});
+		
+	o.value=output;
+		svgText = input.replace(/(_) *( *<.+?>| *[0-9]+) *(<.+?>| *[0-9]+)([^_]*)/g, function (m, $com, $a, $b, $old) {
+		return `<path stroke="${ev($a)}" fill="${ev($b)}" d="${$old}"/>\n`;
+	});	
+	svgBox.value=svgText;	
+	s.innerHTML=decodeSVG(colBox.value, output);
+	
+	};
+
+function decodeSVG(p,coded){l=23;p=p.split`#`;a=coded.split``.map(function(_){return _.charCodeAt(0)-32});r="";for(i=0;i<a.length;){c=a[i++];f=function(_){return _>31?'"url(#c'+_+')"':'"#'+p[_]+'"'};if(!c){r+='"/> <path stroke='+f(a[i++]-l)+" fill="+f(a[i++]-l)+' d="';continue}if(c<l)r+="_CcSsQqTtAaZMmLlHhVvZz-"[c];else if(c>=92)r+=Math.max(c-92,0)*96+a[i++]-l;else r+=c-l+" "}return r.slice(4)+'"/> '}
+
+</script>
+</head>
+<body id=b onload="init()">
+	<p><br></p>
+	<div class="container">		
+		<textarea class="item-input" oninput="convert(value)" rows=10 id=iteminp>
+		</textarea>
+		
+		<span class="item-input t">Input</span>
+		
+		<svg class="item-svg" viewBox="0 0 100 100" width="200px" height="200px" style="border: 1px solid black">								
+		<g id=s>		
+		</g>
+		</svg>		
+		<span class="item-svg t">SVG</span>
+		
+		<textarea class="item-code" rows=10 id=o>
+
+		</textarea>		
+		<span class="item-code t">Code</span>
+		
+		<textarea class="item-palette" rows=10 id=colBox></textarea>
+		<span class="item-palette t">Palette</span>
+		
+		<textarea class="item-decoder" rows=10 id=decodeBox></textarea>		
+		<span class="item-decoder t">Decoder</span>
+		
+		<textarea class="item-svgcode" rows=10 id=svgBox></textarea>		
+		<span class="item-svgcode t">SVG Code</span>
+	</div>
+</body>
+</html>
