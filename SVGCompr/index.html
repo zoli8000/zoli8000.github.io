@@ -59,13 +59,13 @@
 				
 				// Example SVG codes
 				fox = [' 89-lV/VP/I=/FF/9@/H`/^],!NTF 8:-R^/_]/MX,!OS<!ZQ< 8;!jU:!QT:![R:', 'fox #F90|white #FFF|black #000'];				
-				cat = [' 9:-J="LBELOS/[G"V>L9J=,-="BLS/yG"~>9=, 9;!j`V 8<!jfD 89!\\a<!xa< 9:-ec/oc/jg, 98-cj"engnjh"mnnmpj','black #000|pink #FDD|cat #EEE|white #FFF']
+				cat = [' 9:-J="LBELOS/[G"V>L9J=,-="BLS/yG"~>9=, 9;!j]V 8<!jfD 89!\\`<!x`< 9:-ec/oc/jg, 98-cj"engnjh"mnnmpj-Vf/ee/Xj-~f/oe/|j','black #000|pink #FDD|cat #EEE|white #FFF']
 				iteminp.value=readInput(cat);
 				convert(iteminp.value)
 			}
 			
 			convert = input => {
-				colors={'none': [0, '#']};
+				colors={'none': [0, 'none']};
 				ev = function (str)  {
 					if (str[0]!='<') return str;
 					str = str.match(/[a-zA-Z]+/);
@@ -107,7 +107,7 @@
 							palette += colors[k][1].toUpperCase();
 							//colText +='"'+colors[k][1]+'" -- '+colors[k][0]+', '+k+'\n'; 
 						}
-						colBox.value=palette.slice(1);//+'\n'+colText;
+						colBox.value=palette.slice(4);//+'\n'+colText;
 					}
 					
 					// Wrong character, return with empty string
@@ -148,11 +148,13 @@
 					
 					});
 					
+				// Escape
+				outp_esc = output.replace("\\","\\\\");
 				// Set compressed result
-				o.value=output;
+				o.value=outp_esc;
 
 				// Report compressed length
-				codeLabel.innerHTML = 'Code ('+ output.length + ' + '+ (decodeBox.value).length+' = ' + (output.length + (decodeBox.value).length) + ' bytes)';
+				codeLabel.innerHTML = 'Code ('+ outp_esc.length + ' + '+ (decodeBox.value).length+' = ' + (outp_esc.length + (decodeBox.value).length) + ' bytes)';
 				
 				// Uncompressed SVG creator
 				C = []
@@ -168,6 +170,7 @@
 
 				// Try decompressing the SVG image, create a real, visible SVG from it.
 				d = decodeSVG(colBox.value, output, l);
+				console.log(d);
 				s.innerHTML=d;								
 				};
 
@@ -187,7 +190,7 @@
 					else if (s[i]<l) txt+= '\n'+svgCommands[s[i]];
 					else txt += ` ${s[i]-l}`;
 					i++;
-				}
+				}				
 				return txt;
 			}
 
@@ -206,7 +209,8 @@
 				r="";				
 			
 				// f is a function, returning an url... for 
-				f=function(_){return _>31?'"url(#c'+_+')"':'"#'+p[_]+'"'};
+				// f=function(_){return _>31?'"url(#c'+_+')"':'"#'+p[_]+'"'};
+				f=function(_){return _==0?'"none"':`"#${p[_]}"`};
 				
 				// Color conversion - if '_' is used, get one color, otherwise use stored color
 				m=x=>c?C[x]:C[x]=f(a[i++]-l);
@@ -224,7 +228,7 @@
 						}
 					else if(c<l) r+="_XCcSsQqTtAaZMmLlHhVvZz-"[c]; else r+=c-l+" ";
 				}
-				return r.slice(4).replace("[\]","\\\\")+'"/> '
+				return r.slice(4)+'"/> '
 			}
 
 		</script>
