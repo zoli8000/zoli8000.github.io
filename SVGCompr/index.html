@@ -17,7 +17,7 @@
 				grid-area: code;
 			}
 			.item-svg {
-				grid-area: svg;
+				grid-area: svg;				
 			}
 			.item-decoder {
 				grid-area: decoder;
@@ -26,26 +26,91 @@
 			.item-svgcode {
 				grid-area: svgcode;
 			}
+
+			.item-help {
+				grid-area: help;
+				border: 1px solid grey;
+			}
+			.dr-holder {
+				position: relative;
+				width: 350px;
+				height: 100%;
+				display: inline-block;
+			}			
+			.dr {
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				top: 0px;
+				left: 0px;
+			}
+			
+
+			.b-holder {
+				position: static;
+				width: 70px;
+				height: 100%;
+				display: inline-block;
+				vertical-align: top;
+			}
+
+			.b-holder ul li {				
+				width: 70px;
+				height: 70px;
+				border: 1px solid black;
+				background-color: #eee;
+				margin-top: 5px;
+				list-style-type: none;
+				vertical-align:middle;
+				text-align: center;		
+				padding: 0px;	
+				border-radius: 3px;
+			}
+
+			.item-help ul li {				
+				margin-left: 10px;
+				list-style-type: none;
+			}
+
 			.container {
 				display: grid;  
 				row-gap: 40px;
 				column-gap: 40px;
 				grid-template-columns: 200px 200px 200px 200px;
-				grid-template-rows: auto;
+				grid-template-rows: 200px 100px 150px 150px;
 				grid-template-areas: 
-					"input input palette palette"
-					"input input code code"
-					"svg decoder svgcode svgcode";
+					"input input palette decoder"
+					"input input svgcode svgcode"
+					"svg svg code code"
+					"svg svg help help";
 			}
 		</style>
 
 		<script>
-			// Display coordinates for SVG image window.
-			function showCoord(e) {
+			// Return coordinates for SVG image window.
+			function getCoord(e) {
 				let offset = svgDisp.getBoundingClientRect();
   				let relativeX = (e.pageX - offset.left);
 				let relativeY = (e.pageY - offset.top);
-				svgDispLabel.innerHTML = 'SVG ('+ (relativeX >> 1) +', '+ (relativeY >> 1) +')';
+				return [~~(relativeX/svgDisp.getBoundingClientRect().width*100), ~~(relativeY/svgDisp.getBoundingClientRect().height*100)]
+			}
+
+			function addImage(e) {
+				var file = document.getElementById('file').files[0];
+  if(file){
+    getAsText(file);
+  }
+}
+
+function getAsText(readFile) {
+
+  var reader = new FileReader();
+			}
+
+			// Display coordinates for SVG image window.
+			function showCoord(e) {				
+				let s = getCoord(e)
+				svgDispLabel.innerHTML = `SVG (${s[0]}, ${s[1]})`;
 			}
 
 			// Init, functions
@@ -58,10 +123,16 @@
 				decodeBox.value="_="+decodeSVG.toString().replace(/\s*\/\/.*$|[\t\r\n]+/gm,'').replace("l=23","l="+svgCommands.length);
 				
 				// Example SVG codes
-				fox = [' 89-lV/VP/I=/FF/9@/H`/^],!NTF 8:-R^/_]/MX,!OS<!ZQ< 8;!jU:!QT:![R:', 'fox #F90|white #FFF|black #000'];				
-				cat = [' 9:-J="LBELOS/[G"V>L9J=,-="BLS/yG"~>9=, 9;!j]V 8<!jfD 89!\\`<!x`< 9:-ec/oc/jg, 98-cj"engnjh"mnnmpj-Vf/ee/Xj-~f/oe/|j','black #000|pink #FDD|cat #EEE|white #FFF']
+				fox = [' 89-lVºP­=ªF@¬`Â],!NTF 8:-R^Ã]±X,!OS<!ZQ< 8;!jU:!QT:![R:', 'fox #F90|white #FFF|black #000'];				
+				cat = [' 9:-J=$ELOS¿G$V=J=,-=$LSÝG$~==, 9;!j]V 8<!jfD 89!\\`<!x`< 9:-ecÓcjg, 98-cj$imjhknqj-VfÉeXj-~fÓe|j 8<!^^9!z^9','black #000|pink #FDD|cat #EEE|white #FFF']
 				iteminp.value=readInput(cat);
 				convert(iteminp.value)
+
+				var fr=new FileReader();  
+  				fr.onload = function(e) { 
+					document.getElementById("imgDr").src = this.result; 
+				};
+  				addF.addEventListener("change",function() {fr.readAsDataURL(addF.files[0]);});
 			}
 			
 			convert = input => {
@@ -85,8 +156,8 @@
 				//			$n:			number found.
 				//			$bad:		error. When found, return empty string as a result.
 				
-				output = input.replace(/((?:\<)([a-zA-Z]+)( .+?)*(?:\>))|([a-zA-Z_-]+){1}|([0-9]+)|(.|\n)/g, 
-										function (m, $0, $coltok, $colval, $com, $n, $bad) {
+				output = input.replace(/((?:\<)([a-zA-Z]+)( .+?)*(?:\>))|L\s*(\d+)|([a-zA-Z_-]+){1}|([0-9]+)|(.|\n)/g, 
+										function (m, $0, $coltok, $colval, $l, $com, $n, $bad) {
 					// Color setting, set new color
 					if ($0!=undefined) {						
 						
@@ -112,6 +183,11 @@
 					
 					// Wrong character, return with empty string
 					if ($bad!=undefined) return '';
+
+					// Line command
+					if ($l!=undefined) {
+						return String.fromCharCode(32+l+100+Math.round($l,0))
+					}
 
 					// Command used, handle it
 					if ($com!=undefined) {
@@ -170,6 +246,7 @@
 
 				// Try decompressing the SVG image, create a real, visible SVG from it.
 				d = decodeSVG(colBox.value, output, l);				
+				console.log(d);
 				s.innerHTML=d;								
 				};
 
@@ -187,6 +264,7 @@
 				while (i<s.length) {					
 					if (s[i]==0) txt += `\n\n_ <${c[s[++i]-l]}> <${c[s[++i]-l]}>`
 					else if (s[i]<l) txt+= '\n'+svgCommands[s[i]];
+					else if (s[i]>124) txt+= `\nL ${s[i]-l-100}`;
 					else txt += ` ${s[i]-l}`;
 					i++;
 				}				
@@ -202,6 +280,13 @@
 				// r: result string
 				// i: counter
 
+				// 24 command characters: _XmlcsqtahvzCSQTAZMLHVZ-
+				// X is an extension for supporting circles instead of arcs.
+				// Codes: 32..55: command (+32)
+				// Numbers: 
+				//				absolute 56-155: 	numbers 0..99
+				//						 156-255:	numbers 0..99, use L command before
+				
 				// 	Slice colors			
 				p=p.split`#`
 
@@ -214,20 +299,39 @@
 				
 				// Color conversion - if '_' is used, get one color, otherwise use stored color
 				m=x=>c?C[x]:C[x]=f(a[i++]-l)
+
+				// Get one number to c
 				n=_=>(c=a[i++])-l+" "
 
 				// Loop through the string				
 				while (i<a.length){										
 					// New SVG path					
 					c=a[i++]
+										
 					if(c<2){
 						// Workaround to draw circles						
 						r+=`"/> <${["path","circle"][c]} stroke=${m(0)} fill=${m(1)}`
 						r+=c==0?'d="':`cx=${n()} cy=${n()} r=`+n()
-						}
-					else if(c<l) r+="_XCcSsQqTtAaZMmLlHhVvZz-"[c];else r+=c-l+" "
-				}
+						}				
+							
+					else if(c<l) r+="_XCcSsQqTtAaZMmLlHhVvZz-"[c];
+					else r+=(c>124?"L "+(c-124):c-l)+" "
+				}				
 				return r.slice(4)+'"/> '
+			}
+
+			function insertText(t) {
+				pos = iteminp.selectionStart;
+				if (addL.checked) t = `\nL ${t}`
+				iteminp.value = iteminp.value.slice(0,pos) + t + iteminp.value.slice(pos)
+				convert(iteminp.value)
+			}
+ 
+			function showColor(t) {
+				colorVal.innerHTML = t.value.split``.reduce((t,c,i)=>t+(i%2?c:''))
+			}
+			function toggleImage() {
+				imgDr.style.visibility = showImg.value=='on' ? 'visible' : 'hidden'
 			}
 
 		</script>
@@ -243,10 +347,41 @@
 			<span class="item-input t">Input</span>
 			
 			<!-- Generated SVG image -->
-			<svg class="item-svg" viewBox="0 0 100 100" width="200px" height="200px" style="border: 1px solid black" onmousemove="showCoord(event)" id=svgDisp>
-				<g id=s></g>
-			</svg>		
+			<div class="item-svg" >
+				<div class="dr-holder">
+					<img class="dr" id="imgDr"/>
+					<svg viewBox="0 0 100 100" class="dr" style="border: 1px solid black" onmousemove="showCoord(event)" onclick="insertText(' '+getCoord(event).join(' '))" id=svgDisp>
+						<g id=s></g>
+					</svg>		
+				</div>
+				<div class="b-holder">
+					<ul>
+						<li> 
+							<input type="color" id="head" value="#ffffff" oninput="showColor(this)"> 
+							<span id=colorVal> #fff</span>
+						</li>						
+						<li>
+							<input  type="checkbox" id=addL value="Line" checked>
+							LINE
+						</li>
+						<li>
+							<label style="height:100%">
+								<input  type="file" id=addF style="display:none">
+								OPEN
+							</label>
+							<input  type="checkbox" id=showImg checked onchange="toggleImage(this)">
+						</li>
+						<li>
+							<label style="height:100%">
+								<input  type="checkbox" id=showSVG>
+								SVG
+							</label>						
+						</li>
+					</ol>
+				</div>
+			</div>
 			<span class="item-svg t" id=svgDispLabel>SVG</span>
+						
 			
 			<!-- Generated compressed data -->
 			<textarea class="item-code" rows=10 id=o></textarea>		
@@ -263,6 +398,17 @@
 			<!-- Uncompressed SVG generator code -->
 			<textarea class="item-svgcode" rows=10 id=svgBox></textarea>		
 			<span class="item-svgcode t" id=svgLabel>SVG Code</span>
+
+			<div class="item-help">				
+				<ul>
+					<li>L: Line to X Y</li>
+					<li>M: Move to X Y</li>
+					<li>X: Circle X Y R</li>
+					<li>C: Curve X1 Y1 A1 A2 X2 Y2 </li>
+					<li>S: Curve A1 A2 X2 Y2 </li>
+					<li>H, V: Horizontal/vertical</li>
+				</ul>			
+			</div>
 		</div>
 	</body>
 </html>
