@@ -2,9 +2,45 @@
 <html>
 
     <head>    
-        <style>
-            #mapid { height: 60%; }
+        <style>            
+            
+            #map-block {                
+                position: absolute;                
+                height: 60%;
+                width: 95%;
+            }
+
+            #mapid { 
+                height: 100%;
+                width: 70%;
+                border: 1px solid #333;
+                display: inline-block;
+            }
+
             .inp { height: 10%; }
+
+            #layer-container {
+                width: 25%;
+                height: 100%;
+                border: 1px solid #333;
+                position: absolute;
+                display: inline-block;
+                overflow-y: scroll;
+            }
+            .layers {
+                width: 95%;
+                list-style-type: none;
+                margin-left:4px;
+                padding: 0px;
+            }
+            .layers label {
+                width: 100%;
+                border: 1px solid black;
+                margin-bottom: 4px;                
+                display: block;
+                user-select: none;
+            }
+
         </style>
         <!-- Add Leaflet map - https://leafletjs.com/examples/quick-start/ -->
 
@@ -17,8 +53,12 @@
         </script>
 
         <script>
+            var layerData = [];
+            var map;
+            var poly_id = {};
+
             function init() {
-                var map = L.map('mapid').setView([51.505, -0.09], 13);          
+                map = L.map('mapid').setView([51.505, -0.09], 13);          
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 }).addTo(map);
@@ -26,11 +66,100 @@
                 L.marker([51.5, -0.09]).addTo(map)
                     .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
                     .openPopup();      
+                                
+                var parser = new DOMParser();                
+                var file_count = 100;                
+
+  				function handleGPX(e) { 
+					// fileList.value = this.result; 
+                    var coords = [];
+                    xmlDoc = parser.parseFromString(this.result,"text/xml");
+
+                    var pt = xmlDoc.getElementsByTagName("trkpt");
+                                        
+                    Array.from(pt).forEach(p =>{
+                        let lat = p.getAttribute("lat"),
+                            lon = p.getAttribute("lon");
+
+                        coords.push([lat,lon]);
+                    });
+                    
+                    layerData.push(coords);
+                    file_count--;
+                    if (!file_count) showMap();
+				};
+
+                inpFiles.addEventListener("change",function() {
+                    t = ""
+                    if (inpFiles.files) {
+                        layers.innerHTML = "";
+                        
+                        file_count = inpFiles.files.length;
+
+                        Array.from(inpFiles.files).forEach(file => {                                                        
+                            var li = document.createElement('li');
+                            var inp = document.createElement('input');
+                            inp.type="checkbox";
+                            var lbl = document.createElement('label');
+                            
+                            lbl.appendChild(inp);
+                            lbl.appendChild(document.createTextNode(file.name));
+                            li.appendChild(lbl);                            
+                            
+                            layers.appendChild(li);                        
+
+                            var fr=new FileReader();  
+                            fr.readAsText(file);
+                            fr.onload = handleGPX;
+                        });                                            
+                    }                     
+                });
+            }
+
+            function showMap() {     
+                poly = []                
+                function  segmentClick(t) {
+                    fnum = poly_id[t.sourceTarget._leaflet_id];
+                    document.querySelectorAll("li").forEach(l=>{                    
+                        l.style.backgroundColor="#EEE";                    
+                    });
+
+                    var l = document.querySelector(`li:nth-child(${fnum+1})`)
+                    l.style.backgroundColor="#44b";                    
+
+                }
+
+                layerData.forEach((p,i)=> {
+                    var polyline = L.polyline(p, {color: 'red'}).addTo(map);
+                    polyline.on('click', segmentClick);
+                    poly.push(polyline);
+                    poly_id[polyline._leaflet_id] = i;
+                });
+
+                // var polyline = L.polyline(layerData, {color: 'red'}).addTo(map);
+
+                // zoom the map to the polyline
+                map.fitBounds(poly[0].getBounds());
+                fileList.value=`${layerData.length} files, ${layerData.reduce((t,c)=>t+c.length,0)} coordinates shown.`;                
             }
         </script>
     </head>    
     <body onload="init()">
-        <input type="file" class="inp" id=inpFiles/>
-        <div id="mapid"></div>
+        <input type="file" class="inp" id=inpFiles multiple/>
+        
+        <div id="map-block">
+            <div id="mapid"></div>
+            <div id="layer-container">
+                <ul class="layers" id=layers>
+                    <li>
+                        <label>
+                            <input type="checkbox"/>
+                            No files opened yet...
+                        </label>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <textarea rows=10 id=fileList></textarea>		
     </body>
 </html>
