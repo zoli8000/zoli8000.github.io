@@ -19,6 +19,10 @@
 
             .inp { height: 10%; }
 
+            .info {
+                height: 30px;
+                width: 100%;
+            }
             #layer-container {
                 width: 25%;
                 height: 100%;
@@ -52,21 +56,25 @@
                 crossorigin="">
         </script>
 
-        <script>
-            var layerData = [];
-            var map;
-            var poly_id = {};
+        <script>                                    
+            var map                                 // Map object            
+            var layerData                           // Map points            
+            var poly_id = {}                        // Map polyline id - file number mapping            
+            var fileList = []                       // Files opened
+            var poly = []                           // All poly items
+            var hov                                 // Hover tooltip
+            
+            // var mapLayer                            // Layer for lines
+            // var selectedLayer                       // Layer for selected lines
+            var polyProps                           // Poly properties
 
             function init() {
-                map = L.map('mapid').setView([51.505, -0.09], 13);          
+                // Init Leaflet map                
+                map = L.map('mapid');
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 }).addTo(map);
-
-                L.marker([51.5, -0.09]).addTo(map)
-                    .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-                    .openPopup();      
-                                
+                  
                 var parser = new DOMParser();                
                 var file_count = 100;                
 
@@ -75,28 +83,46 @@
                     var coords = [];
                     xmlDoc = parser.parseFromString(this.result,"text/xml");
 
-                    var pt = xmlDoc.getElementsByTagName("trkpt");
-                                        
+                    var pt = xmlDoc.getElementsByTagName("trkpt");                                    
+                    var lastp = L.latLng(0, 0);                    
+
                     Array.from(pt).forEach(p =>{
                         let lat = p.getAttribute("lat"),
                             lon = p.getAttribute("lon");
+                        
+                        newp = L.latLng(lat, lon);
 
-                        coords.push([lat,lon]);
+                        if (map.distance(lastp, newp) > minDist.value) {
+                            coords.push([lat,lon]);
+                            lastp = newp;
+                        }
+                                                
                     });
                     
+                    // let s = L.LineUtil.simplify(coords, maxSimp.value);
+                    // layerData.push(simplify(coords));
                     layerData.push(coords);
                     file_count--;
                     if (!file_count) showMap();
 				};
 
-                inpFiles.addEventListener("change",function() {
-                    t = ""
+                inpFiles.addEventListener("change",function() {                    
+                    layerData = []
+                    polyProps = []
+                    fileList = []
+
+                    poly.forEach(p => {
+                        map.removeLayer(p);
+                    });
+
                     if (inpFiles.files) {
                         layers.innerHTML = "";
                         
                         file_count = inpFiles.files.length;
 
                         Array.from(inpFiles.files).forEach(file => {                                                        
+                            fileList.push(file)
+
                             var li = document.createElement('li');
                             var inp = document.createElement('input');
                             inp.type="checkbox";
@@ -107,7 +133,7 @@
                             li.appendChild(lbl);                            
                             
                             layers.appendChild(li);                        
-
+                            
                             var fr=new FileReader();  
                             fr.readAsText(file);
                             fr.onload = handleGPX;
@@ -115,37 +141,131 @@
                     }                     
                 });
             }
+            function simplify(arr) {                                
+                // Simplify polyline 
+                
+                function recurse(a, m, n, res) {
+                    console.log(`${m}..${n}`);
+                    
+                    max_dist = a.reduce((t,c,i) => {
+                        // Get max distance in [id, dist]
+                        // console.log(`${m}..${n}`);                        
+                        dist = L.LineUtil.pointToSegmentDistance(L.point(c), L.point(a[m]), L.point(a[n]));
+                        if ((dist >= t[1]) & (dist>maxSimp.value/111319)) return [i, dist]; else return t;
+                    }, [-1, 0]);
+
+                    let maxd = max_dist[0]
+                    // Everything will be simplified.
+                    if (maxd == -1) {
+                        return res.concat([a[m]],[a[n]]); 
+                    } else {
+                        return recurse(a, m, maxd, res) +  recurse(a, maxd, n, [])
+                    }
+                }
+                                
+                return recurse(arr, 0, arr.length-1, []);
+            }
+            function selectItem(id) {
+                num = poly_id[id]
+
+            }
 
             function showMap() {     
-                poly = []                
-                function  segmentClick(t) {
+                poly = []  
+                hov =  L.popup()
+                .setLatLng(layerData[0][0])
+                .setContent('DD')
+                .openOn(map);
+
+                function hoverEvent(ev) {
+                    let fnum = poly_id[ev.sourceTarget._leaflet_id];
+                    hov.setLatLng(ev.latlng)       
+                    let fname = polyProps[fnum].name
+                    let lastMod = polyProps[fnum].lastMod
+                    hov.setContent(`${fname}\n${lastMod}`)
+                }   
+
+                function segmentClick(t) {
+                    /*
+                    min_id = poly.reduce((total,c,i) => {
+                        dist = c.closestLayerPoint(L.point(ev.latlng)).distance(ev.latlng)
+                        if (dist<t[1]) return [i, dist]; else return t
+                    }, [-1, Infinity])
+                    
+                    if (min_id[1]>100) return
+
+                    t = poly[min_id[0]]
+                    */
                     fnum = poly_id[t.sourceTarget._leaflet_id];
                     document.querySelectorAll("li").forEach(l=>{                    
                         l.style.backgroundColor="#EEE";                    
                     });
 
-                    var l = document.querySelector(`li:nth-child(${fnum+1})`)
+                    s = !polyProps[fnum].selected
+                    polyProps[fnum].selected = s
+
+                    let l = document.querySelector(`li:nth-child(${fnum+1})`)
                     l.style.backgroundColor="#44b";                    
+                    l.querySelector('input').checked = s
 
+                    poly[fnum].setStyle({color: s ? 'blue' : 'red' });
+
+                    // Show layer item
+                    l.scrollIntoView();
+                    
                 }
+                
+                var toleranceRender = L.canvas({ padding: 0.5, tolerance: 20 });
 
-                layerData.forEach((p,i)=> {
-                    var polyline = L.polyline(p, {color: 'red'}).addTo(map);
+                layerData.forEach((p,i)=> {                    
+                    var polyline = L.polyline(p, {color: 'red', renderer: toleranceRender}).addTo(map);
+
                     polyline.on('click', segmentClick);
+                    polyline.on('mouseover', hoverEvent);
+                    
                     poly.push(polyline);
+                    
+                    // Add properties
+                    let prop = {                        
+                        selected: false
+                    }
+                    prop.name= fileList[i].name
+                    prop.lastMod = fileList[i].lastModifiedDate
+                    polyProps.push(prop)
+
                     poly_id[polyline._leaflet_id] = i;
+                    
+                });
+                
+                // zoom the map to include all polylines
+                let zoomOut = null;
+                poly.forEach(p=>{
+                    if (zoomOut == null) {
+                        zoomOut = p.getBounds()
+                    } else {
+                        let b = p.getBounds();
+                        let b0 = b._northEast;
+                        let b1 = b._southWest;
+                        b0 = L.latLng (Math.max(b0.lat, zoomOut._northEast.lat), Math.max(b0.lng, zoomOut._northEast.lng));
+                        b1 = L.latLng (Math.min(b1.lat, zoomOut._southWest.lat), Math.min(b1.lng, zoomOut._southWest.lng));
+                        zoomOut = L.latLngBounds(b0, b1);                        
+                    }                    
                 });
 
-                // var polyline = L.polyline(layerData, {color: 'red'}).addTo(map);
-
-                // zoom the map to the polyline
-                map.fitBounds(poly[0].getBounds());
-                fileList.value=`${layerData.length} files, ${layerData.reduce((t,c)=>t+c.length,0)} coordinates shown.`;                
+                map.fitBounds(zoomOut);
+                info.innerHTML=`${layerData.length} files, ${layerData.reduce((t,c)=>t+c.length,0)} coordinates shown.`;                
             }
         </script>
     </head>    
     <body onload="init()">
-        <input type="file" class="inp" id=inpFiles multiple/>
+        <div>
+            <input type="file" class="inp" id=inpFiles multiple/><br>
+            <input type="number" id=minDist value="5"/>
+            <label for=minDist>meters min dist</label>
+
+            <input type="number" id=maxSimp value="10"/> meters simplify<br>
+            <span id=info class="info"></span>
+        </div>
         
         <div id="map-block">
             <div id="mapid"></div>
@@ -159,7 +279,6 @@
                     </li>
                 </ul>
             </div>
-        </div>
-        <textarea rows=10 id=fileList></textarea>		
+        </div>        
     </body>
 </html>
