@@ -5,15 +5,15 @@
 <head>
 	<title>ZoliDraw</title>
 	<link rel="stylesheet" type="text/css" href="stylesheet.css">
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-	<script type="text/javascript" src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>	
+	<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>	
 	<script type="text/javascript" src="DumbZip.js"></script>	
 	<script type="text/javascript" src="ColorUtils.js"></script>	
 	<script type="text/javascript" src="pixelfont.js"></script>		
 	<script type="text/javascript" src="drawMain.js"></script>		
 </head>
 
-<body onload="startDraw()">
+<body onload="setTimeout(function(){ startDraw(); }, 500);">
 	<div class="menubar">
 		<ul>
 		<li>HOME</li>
