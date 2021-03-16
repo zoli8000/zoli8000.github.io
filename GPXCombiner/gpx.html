@@ -71,7 +71,7 @@
 
         <script>                                    
             var map                                 // Map object            
-            var layerData                           // Map points            
+            var layerData = []                      // Map points            
             var poly_id = {}                        // Map polyline id - file number mapping            
             var fileList = []                       // Files opened
             var poly = []                           // All poly items
@@ -79,7 +79,7 @@
             
             // var mapLayer                            // Layer for lines
             // var selectedLayer                       // Layer for selected lines
-            var polyProps                           // Poly properties
+            var polyProps = []                        // Poly properties
 
             var mapl                                // Map layer
 
@@ -87,7 +87,97 @@
                     ToDo: View / Editor boxes (V E Both)
                     Timelapse (from...to painted every ...x meters/sec, distance painted and updated on chart)                    
             */
+            var parser = new DOMParser();                
+            var file_count = 100;     
 
+            // Starting data
+            test_gpx =`<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+                <gpx>
+                    <trk >
+                <trkseg>
+                <trkpt lat="47.50872" lon="19.08696"></trkpt>
+                <trkpt lat="47.50858" lon="19.08727"></trkpt>
+                <trkpt lat="47.50878" lon="19.08769"></trkpt>
+                <trkpt lat="47.50926" lon="19.08782"></trkpt>
+                <trkpt lat="47.50944" lon="19.08747"></trkpt>
+                <trkpt lat="47.50972" lon="19.08770"></trkpt>
+                <trkpt lat="47.50946" lon="19.08720"></trkpt>
+                <trkpt lat="47.50960" lon="19.08688"></trkpt>
+                <trkpt lat="47.50972" lon="19.08698"></trkpt>
+                <trkpt lat="47.50963" lon="19.08704"></trkpt>
+                <trkpt lat="47.50951" lon="19.08681"></trkpt>
+                <trkpt lat="47.50968" lon="19.08683"></trkpt>
+                <trkpt lat="47.50967" lon="19.08671"></trkpt>
+                <trkpt lat="47.50996" lon="19.08658"></trkpt>
+                <trkpt lat="47.50970" lon="19.08637"></trkpt>
+                <trkpt lat="47.50991" lon="19.08633"></trkpt>
+                <trkpt lat="47.51014" lon="19.08572"></trkpt>
+                <trkpt lat="47.51004" lon="19.08558"></trkpt>
+                <trkpt lat="47.50984" lon="19.08595"></trkpt>
+                <trkpt lat="47.50986" lon="19.08579"></trkpt>
+                <trkpt lat="47.50997" lon="19.08586"></trkpt>
+                <trkpt lat="47.50984" lon="19.08513"></trkpt>
+                <trkpt lat="47.50994" lon="19.08497"></trkpt>
+                <trkpt lat="47.51057" lon="19.08473"></trkpt>
+                <trkpt lat="47.51096" lon="19.08488"></trkpt>
+                <trkpt lat="47.51153" lon="19.08471"></trkpt>
+                <trkpt lat="47.51180" lon="19.08479"></trkpt>
+                <trkpt lat="47.51246" lon="19.08548"></trkpt>
+                <trkpt lat="47.51270" lon="19.08681"></trkpt>
+                <trkpt lat="47.51259" lon="19.08788"></trkpt>
+                <trkpt lat="47.51276" lon="19.08797"></trkpt>
+                <trkpt lat="47.51281" lon="19.08828"></trkpt>
+                <trkpt lat="47.51312" lon="19.08847"></trkpt>
+                <trkpt lat="47.51315" lon="19.08884"></trkpt>
+                <trkpt lat="47.51333" lon="19.08898"></trkpt>
+                <trkpt lat="47.51342" lon="19.09066"></trkpt>
+                <trkpt lat="47.51371" lon="19.09085"></trkpt>
+                <trkpt lat="47.51435" lon="19.09034"></trkpt>
+                <trkpt lat="47.51442" lon="19.09006"></trkpt>
+                <trkpt lat="47.51429" lon="19.08982"></trkpt>
+                <trkpt lat="47.51440" lon="19.09010"></trkpt>
+                <trkpt lat="47.51364" lon="19.09032"></trkpt>
+                <trkpt lat="47.51374" lon="19.08935"></trkpt>
+                <trkpt lat="47.51357" lon="19.08911"></trkpt>
+                <trkpt lat="47.51339" lon="19.08934"></trkpt>
+                <trkpt lat="47.51372" lon="19.08930"></trkpt>
+                <trkpt lat="47.51352" lon="19.08905"></trkpt>
+                <trkpt lat="47.51369" lon="19.08903"></trkpt>
+                <trkpt lat="47.51312" lon="19.08838"></trkpt>
+                <trkpt lat="47.51332" lon="19.08797"></trkpt>
+                <trkpt lat="47.51360" lon="19.08790"></trkpt>
+                <trkpt lat="47.51389" lon="19.08702"></trkpt>
+                <trkpt lat="47.51497" lon="19.08653"></trkpt>
+                <trkpt lat="47.51494" lon="19.08628"></trkpt>
+                <trkpt lat="47.51527" lon="19.08530"></trkpt>
+                <trkpt lat="47.51521" lon="19.08492"></trkpt>
+                <trkpt lat="47.51536" lon="19.08479"></trkpt>
+                <trkpt lat="47.51517" lon="19.08342"></trkpt>
+                <trkpt lat="47.51543" lon="19.08252"></trkpt>
+                <trkpt lat="47.51557" lon="19.08251"></trkpt>
+                <trkpt lat="47.51633" lon="19.08082"></trkpt>
+                <trkpt lat="47.51563" lon="19.07903"></trkpt>
+                <trkpt lat="47.51550" lon="19.07890"></trkpt>
+                <trkpt lat="47.51519" lon="19.07904"></trkpt>
+                <trkpt lat="47.51388" lon="19.08042"></trkpt>
+                <trkpt lat="47.51340" lon="19.08171"></trkpt>
+                <trkpt lat="47.51342" lon="19.08198"></trkpt>
+                <trkpt lat="47.51295" lon="19.08203"></trkpt>
+                <trkpt lat="47.51234" lon="19.08439"></trkpt>
+                <trkpt lat="47.51204" lon="19.08458"></trkpt>
+                <trkpt lat="47.51184" lon="19.08494"></trkpt>
+                <trkpt lat="47.51077" lon="19.08503"></trkpt>
+                <trkpt lat="47.51055" lon="19.08486"></trkpt>
+                <trkpt lat="47.51017" lon="19.08407"></trkpt>
+                <trkpt lat="47.50929" lon="19.08414"></trkpt>
+                <trkpt lat="47.50914" lon="19.08398"></trkpt>
+                <trkpt lat="47.50905" lon="19.08411"></trkpt>
+                <trkpt lat="47.50888" lon="19.08400"></trkpt>
+                <trkpt lat="47.50895" lon="19.08425"></trkpt>
+                </trkseg>
+
+                    </trk>
+                </gpx>`;
             function generateLayers() {
                 // Create distinct layers using color info
                 // Get color codes from canvas
@@ -181,22 +271,9 @@
                 
             
             }
-            function init() {
-                // Init Leaflet map                
-                map = L.map('mapid');
-                mapl = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                    crossOrigin: 'anonymous'
-                }).addTo(map);
+                       
 
-                // map.removeLayer(highways)
-
-                // mapl.tileDrawn(canvas
-                  
-                var parser = new DOMParser();                
-                var file_count = 100;                
-
-  				function handleGPX(e) { 
+            function handleGPX(e) { 
 					// fileList.value = this.result; 
                     var coords = [];
                     xmlDoc = parser.parseFromString(this.result,"text/xml");
@@ -224,6 +301,21 @@
                     if (!file_count) showMap();
 				};
 
+            function init() {
+                // Init Leaflet map                
+                map = L.map('mapid');
+                mapl = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    crossOrigin: 'anonymous'
+                }).addTo(map);
+
+                // map.removeLayer(highways)
+
+                // mapl.tileDrawn(canvas
+                                  
+
+
+
                 inpFiles.addEventListener("change",function() {                    
                     layerData = []
                     polyProps = []
@@ -238,27 +330,32 @@
                         
                         file_count = inpFiles.files.length;
 
-                        Array.from(inpFiles.files).forEach(file => {                                                        
-                            fileList.push(file)
-
-                            var li = document.createElement('li');
-                            var inp = document.createElement('input');
-                            inp.type="checkbox";
-                            var lbl = document.createElement('label');
-                            
-                            lbl.appendChild(inp);
-                            lbl.appendChild(document.createTextNode(file.name));
-                            li.appendChild(lbl);                            
-                            
-                            layers.appendChild(li);                        
-                            
-                            var fr=new FileReader();  
-                            fr.readAsText(file);
-                            fr.onload = handleGPX;
-                        });                                            
+                        Array.from(inpFiles.files).forEach(file => fileLoop(file));                                            
                     }                     
                 });
+
+                addDumy();
             }
+
+            function fileLoop(file) {
+                fileList.push(file)
+
+                var li = document.createElement('li');
+                var inp = document.createElement('input');
+                inp.type="checkbox";
+                var lbl = document.createElement('label');
+                
+                lbl.appendChild(inp);
+                lbl.appendChild(document.createTextNode(file.name));
+                li.appendChild(lbl);                            
+                
+                layers.appendChild(li);                        
+                
+                var fr=new FileReader();  
+                fr.readAsText(file);
+                fr.onload = handleGPX;                        
+            }
+
             function simplify(arr) {                                
                 // Simplify polyline 
                 
@@ -287,7 +384,11 @@
                 num = poly_id[id]
 
             }
-
+            function addDumy() {
+                file_count = 1
+                let f = new File([test_gpx], "test.gpx", {type: "text/plain", lastModifiedDate: ''});
+                fileLoop(f);
+            }
             function showMap() {     
                 poly = []  
                 hov =  L.popup()
@@ -377,12 +478,16 @@
     </head>    
     <body onload="init()">
         <div>
+            <h1>GPX data combiner</h1>
+            <p>Combines multiple GPX files to a single map.</p>
+            <p>To be added: route planning with road recognition, automatic path correction recommendation using roads</p>
             <input type="file" class="inp" id=inpFiles multiple/><br>
             <input type="number" id=minDist value="5"/>
             <label for=minDist>meters min dist</label>
 
             <input type="number" id=maxSimp value="10"/> meters simplify<br>
             <span id=info class="info"></span>
+            <input type="button" onclick="generateLayers()" value="Generate routes" />
         </div>
         <div id="map-block0">
             <div id="map-block">
@@ -410,8 +515,9 @@
             <li class="color-item"></li>
             <li class="color-item"></li>
             <li class="color-item"></li>
-        </ul>
-        <canvas id=canv width=2000 height=2000 onclick="generateLayers()"></canvas>
-        <canvas id=canv2 width=2000 height=2000></canvas>
+        </ul>        
+        <canvas id=canv2 width=2000 height=2000 style="width:400px; height:400px"></canvas>
+        <canvas id=canv width=2000 height=2000 style="visibility:hidden"></canvas>
+
     </body>
 </html>
