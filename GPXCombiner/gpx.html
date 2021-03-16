@@ -2,8 +2,11 @@
 <html>
 
     <head>    
-        <style>            
-            
+        <style>                        
+            #map-block0 {
+                height: 60%;
+                width: 95%;
+            }
             #map-block {                
                 position: absolute;                
                 height: 60%;
@@ -44,6 +47,16 @@
                 display: block;
                 user-select: none;
             }
+            #colors {
+                width: 400 px;
+                height: 50 px;
+            }
+            .color-item {
+                border: 1px solid black;
+                width: 40px;
+                height: 40px;
+                display: inline-block;
+            }
 
         </style>
         <!-- Add Leaflet map - https://leafletjs.com/examples/quick-start/ -->
@@ -68,12 +81,117 @@
             // var selectedLayer                       // Layer for selected lines
             var polyProps                           // Poly properties
 
+            var mapl                                // Map layer
+
+            /*
+                    ToDo: View / Editor boxes (V E Both)
+                    Timelapse (from...to painted every ...x meters/sec, distance painted and updated on chart)                    
+            */
+
+            function generateLayers() {
+                // Create distinct layers using color info
+                // Get color codes from canvas
+                // <COLOR> x%...
+                // #f87         Walkway
+                // #fff         Normal road
+                // #ffb         Main road
+                // #fda         Main road
+                // #cfc         Park
+                // #dde         Walking street
+
+
+                var ctx
+                var w
+                var h
+                var data
+                var colors = new Object();
+
+                var ctx = canv.getContext('2d');
+                var ctx2 = canv2.getContext('2d');
+
+                imgs = document.querySelectorAll('img.leaflet-tile');
+                    
+                for (i of imgs) {                                        
+                    txt = i.style.transform
+                    console.log(`${txt}`) 
+                    m = txt.match(/translate3d[(](?<x>[-]{0,1}\d+)px,\s*(?<y>[-]{0,1}\d+)px/);
+                    m = m.groups;
+                    
+                    ctx.drawImage(i, m.x, m.y);   
+
+                    /* m.forEach((match, groupIndex) => {
+                        console.log(`Found match, group ${groupIndex}: ${match}`);
+                    });
+                    */
+                                    
+                }
+                w = 2000
+                h = 2000
+
+                // Get data
+                data = ctx.getImageData(0, 0, 2000, 2000).data;
+
+                ctx2.fillStyle = "#000"
+                ctx2.fillRect(0, 0, 2000, 2000);
+                // Sampling
+                for (let y=0; y<h; y+=1) {
+                    for (let x=0; x<w; x+=1) {
+                        idx = x*4 + y*w*4
+
+                        r = (data[idx] & 0xf0) 
+                        g = (data[idx+1] & 0xf0) 
+                        b = (data[idx+2] & 0xf0) 
+
+                        r2 = (data[idx+4] & 0xf0) 
+                        g2 = (data[idx+5] & 0xf0) 
+                        b2 = (data[idx+6] & 0xf0) 
+
+                        if (((r ^ r2) + (g ^ g2) + (b ^ b2)) > 2) continue;
+                        rgba = '#' + ((r <<4 ) + g + (b>>4)).toString(16);
+                                                
+                        colors[rgba] = (rgba in colors) ? colors[rgba]+1 : 1;
+
+                        // Walkways
+                        
+                        if  (
+                                ( (r==0xf0) & (g>=0x70 & g<=0xa0) & (b>=0x70 & b<=0xa0)) |
+                                ( (r==0xa0 || r==0xb0) & (g>=0x70 & g<=0x90) & (b>=0x20 & b<=0x40)) |                                
+                        // roads                                        }
+                                (['#fff', '#ffb', '#fda', '#dde'].indexOf(rgba)+1)
+                            ) {
+                            ctx2.fillStyle = rgba;
+                            ctx2.fillRect(x, y, 4, 4);
+                        }
+                    }
+                }                
+                
+                sorted = Object.entries(colors).sort((a, b) => -(a[1] - b[1]));
+                console.log(sorted);
+
+                colBoxes = document.querySelectorAll('li.color-item');
+                
+                n = 0;
+                for (i of colBoxes) {
+                    if (sorted[n][1]<5) break;
+                    i.style.backgroundColor = sorted[n][0];
+                    i.innerHTML =  sorted[n][1] + "<br>" + sorted[n][0];
+                    n += 1
+                    if (n>10) break;
+                }
+                
+            
+            }
             function init() {
                 // Init Leaflet map                
                 map = L.map('mapid');
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                mapl = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    crossOrigin: 'anonymous'
                 }).addTo(map);
+
+                // map.removeLayer(highways)
+
+                // mapl.tileDrawn(canvas
                   
                 var parser = new DOMParser();                
                 var file_count = 100;                
@@ -212,10 +330,10 @@
 
                     // Show layer item
                     l.scrollIntoView();
-                    
+                    generateLayers();
                 }
                 
-                var toleranceRender = L.canvas({ padding: 0.5, tolerance: 20 });
+                var toleranceRender = L.canvas({ padding: 0.5, tolerance: 10 });
 
                 layerData.forEach((p,i)=> {                    
                     var polyline = L.polyline(p, {color: 'red', renderer: toleranceRender}).addTo(map);
@@ -266,19 +384,34 @@
             <input type="number" id=maxSimp value="10"/> meters simplify<br>
             <span id=info class="info"></span>
         </div>
-        
-        <div id="map-block">
-            <div id="mapid"></div>
-            <div id="layer-container">
-                <ul class="layers" id=layers>
-                    <li>
-                        <label>
-                            <input type="checkbox"/>
-                            No files opened yet...
-                        </label>
-                    </li>
-                </ul>
-            </div>
+        <div id="map-block0">
+            <div id="map-block">
+                <div id="mapid"></div>
+                <div id="layer-container">
+                    <ul class="layers" id=layers>
+                        <li>
+                            <label>
+                                <input type="checkbox"/>
+                                No files opened yet...
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>        
         </div>        
+        <ul id="colors">
+            <li class="color-item"></li>
+            <li class="color-item"></li>
+            <li class="color-item"></li>
+            <li class="color-item"></li>
+            <li class="color-item"></li>
+            <li class="color-item"></li>
+            <li class="color-item"></li>
+            <li class="color-item"></li>
+            <li class="color-item"></li>
+            <li class="color-item"></li>
+        </ul>
+        <canvas id=canv width=2000 height=2000 onclick="generateLayers()"></canvas>
+        <canvas id=canv2 width=2000 height=2000></canvas>
     </body>
 </html>
