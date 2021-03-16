@@ -1,0 +1,76 @@
+
+******************************
+**                          **
+**        WR-Ball!	    	**
+**                 	    	**
+**    2018, Zoltan Szoke    **
+**                          **
+******************************
+
+BASIC 10Liner Contest 2018 - PUR-120
+
+Entry:			WR-Ball!
+Platform:		Commodore 64
+Author:			Zoltan Szoke
+Language:		Commodore BASIC V2
+Category:		PUR-120
+Emulator:		VICE 64
+E-mail:			zoltan.s.szoke@gmail.com
+
+Loading
+
+Insert the program into your c64/c128/emulator.
+Type load ”*”,8,1 and when finished type run.
+
+The game
+
+Dazzling city is growing rapidly. New skyscrapers emerge from 
+dust day by day.
+As a contractor you have just signed a contract to demolish
+an old building. If you fulfill at least 90% of cleaning, you
+will be awarded with a new contract on a new site, a 
+maximum of five.
+You have carefully analized the building, and created  a
+color map, which shows what your wrecking ball will achieve 
+with a hit. You can hit the building if there is at least one another
+matching color in the four directions.
+The more matching colors there are, the more you progress.
+
+Controls
+
+	‹ ^ › ¡ 	precision aim for wrecking ball
+	1 2 3 4 5	repaint current block with the given color
+	space		hit with the wrecking ball
+	return		finish current site – 
+				if below 90%, game over, otherwise move to
+				next site
+
+Gameplay 
+Every pixels cleared helps you to fulfill your contract.
+However, only two or more of the same color will increase 
+your score.
+The formula used for scoring is (p-2)*(p-1), where p is the 
+number of adjacent pixels of the same color.
+So a hit of 2 pixels mean no score added, 3 pixels mean a score of 2,
+and 20 pixels mean 380.
+When the wrecking ball works, the aim cursor becomes red
+until it finishes its job, signing it with the cursor becoming
+white again.
+Every site you receive one ’repaint’, which can help you in 
+tough situations, or y0ou can use it to reach really high scores.
+
+
+End game
+
+You finish the site with pressing return – if you progressed
+over 90%, and you are not on site 5, you move to the next site.
+You receive the progress percentage of the current site score.
+After the fifth site you retire with the money earned.
+It you are below 90%, you retire as well – a better contractor
+receives the job.
+If you start a new game, you will move to a new city with
+different buildings.
+Every game starts with the same buildings, which
+means you can compete with your friends on the same levels.
+If you would like some random challenge, restart the game
+with pressing return a few times.
