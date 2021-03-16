@@ -129,6 +129,8 @@ function getAsText(readFile) {
 				// Example SVG codes
 				fox = [' 89-lVºP­=ªF@¬`Â],!NTF 8:-R^Ã]±X,!OS<!ZQ< 8;!jU:!QT:![R:', 'fox #F90|white #FFF|black #000'];				
 				cat = [' 9:-J=$ELOS¿G$V=J=,-=$LSÝG$~==, 9;!j]V 8<!jfD 89!\\`<!x`< 9:-ecÓcjg, 98-cj$imjhknqj-VfÉeXj-~fÓe|j 8<!^^9!z^9','black #000|pink #FDD|cat #EEE|white #FFF']
+				empty = [' 9:-``', 'black #000|red #F77']
+
 				iteminp.value=readInput(cat);
 				convert(iteminp.value)
 
@@ -139,6 +141,11 @@ function getAsText(readFile) {
   				addF.addEventListener("change",function() {fr.readAsDataURL(addF.files[0]);});
 			}
 			
+			function setShape(sh) {
+				iteminp.value=readInput(sh);
+				convert(iteminp.value)
+			}
+
 			convert = input => {
 				colors={'none': [0, 'none']};
 				ev = function (str)  {
@@ -341,7 +348,15 @@ function getAsText(readFile) {
 		</script>
 	</head>
 	<body id=b onload="init()">
-		<p><br></p>
+		<h1>SVG Compressor</h1>		
+		<p>Small utility for compressing SVG files using PATHs and a compact decompressor.<br>
+		May be used for code golfing.</p>
+
+		<div style="display: block;margin-bottom: 2em;">
+			<input type="button" value="cat" onclick="setShape(cat)">
+			<input type="button" value="fox" onclick="setShape(fox)">
+			<input type="button" value="empty" onclick="setShape(empty)">
+		</div>
 
 		<!-- Boxes for input and outputs -->
 		<div class="container">		
