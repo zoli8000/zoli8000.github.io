@@ -1,0 +1,284 @@
+/*  
+    All backgrounds are black.
+    Default color is white.
+    Text is not selectable and font is monospace.
+*/
+
+* {    
+    background-color: black;
+    color: white;
+    user-select: none;
+    font-family: monospace;
+}
+
+.upper-block {    
+    /* Editor + data block */
+    
+    width: 1200px;
+    height: 570px;
+}
+
+/****************************
+   Editor and commands block
+****************************/
+
+.canvas-commands-block {    
+    /* Main container */
+
+    width: 500px;
+    height: 550px;
+    display: inline-block;
+    padding: 1em 1em 1em 1em;
+}
+
+#sprite-number {
+    /* Sprite number above the canvas */
+    color: yellow;
+}
+
+#cv {
+    /* Canvas - sprite editor */
+
+    width: 384px;
+    height: 336px;
+    display: inline-block;
+    vertical-align: top;
+    border: 1px solid white;
+}
+
+#command-wrapper {
+    /* Drawing tools container. */
+
+    display: inline-block;
+    vertical-align: middle;
+    width: 50px;
+}
+
+.command-button {                
+    /* A drawing tool. */
+
+    height: 40px;
+    width: 40px;
+    font-size: 30px;
+    border: 1px solid #888;    
+    color:white;
+    text-align: center;    
+    vertical-align: top;
+}
+
+#button-wrapper {    
+    /* Ink, move, transform button container */
+    text-align: center;
+}
+
+.ink-button {            
+    /* A color to choose from (2/4 colors). */   
+
+    height: 30px;
+    width: 60px;
+    font-size: 12px;
+    border: 1px solid white;
+    display: inline-block;
+    text-align: center;
+    padding-top: 15px;
+    color: white;
+    vertical-align: top;    
+    
+}
+
+.movement-button {
+    /* Move/transform buttons. */
+
+    height: 45px;
+    width: 60px;
+    border: 1px solid white;
+    display: inline-block;
+    text-align: center;
+    font-size: 30px;    
+    vertical-align: top;        
+}
+/**********************
+   Data and I/O block
+***********************/
+
+.data-block {    
+    /* Main container */
+
+    width: 500px;
+    height: 550px;
+    display: inline-block;
+    vertical-align: top;
+    padding: 1em 1em 1em 1em;
+}
+
+.io-commands {
+    /* Container for I/O commands */
+
+    width: 90%;
+    font-size: 20px;
+    margin-top: 10px;
+    
+}
+
+.io-item {
+    /* One I/O command */
+
+    display: inline-block;    
+    border: 1px solid #444;
+    vertical-align: middle;
+    height: 25px;
+    padding: 8px 8px 8px 8px;   
+}
+
+.data-item {
+    /* Textareas for byte data I/O */
+    width: 90%;
+}
+
+.data-selector {
+    /* Selected: this / all */
+
+    border: 1px solid #888;
+    background-color: #FFF;
+    font-size: 25px;
+    color: #444;
+}
+
+.data-selector-off {
+    /* Not selected: this / all */
+
+    border: 1px solid #444;
+    background-color: #000;
+    font-size: 25px;
+    color: #aaa;
+}
+
+#xor-stat {
+    /* Display xored info */
+
+    font-size: 16px;
+    color: #ddf;
+}
+
+
+/****************************
+   Options block, 16 colors
+****************************/
+
+.option-block   {    
+    /* Option block + colors*/
+    width: 500px;
+    height: 300px;
+    display: inline-block;
+    vertical-align: top;
+    padding: 1em 1em 1em 1em;
+}
+
+#options input {
+    /* Checkbox */
+    margin: 1em 0.5em 0em 0em;    
+}
+
+#options label{    
+    /* Label for the checkboxes */
+    width: 20%;
+    margin: 0em 1.5em 0em 0em;
+}
+
+#color-list {    
+    /* Color list container */
+    text-align: center;
+}
+
+#color-list li {
+    /* Color list item (16 colors) */
+    height: 40px;
+    width: 40px;                
+    border: 1px solid #888;                                                                
+    list-style-type: none;
+    display: inline-block;
+}
+
+/*********************
+   Sprite icon block    
+**********************/
+
+.sprite-list-block {    
+    /* Container for the whole block */
+    width: 500px;
+    height: 300px;
+    display: inline-block;
+    vertical-align: top;    
+    padding: 1em 1em 1em 1em;    
+    overflow: hidden;
+}
+
+#sprite-list {
+    /* Container for sprite icons */
+    overflow: auto;
+    height: 70%;
+    border: 1px solid #888;
+    text-align: center;
+    padding: 0.5em;    
+    font-size: 30px;    
+}
+
+#sprite-list span {
+    /* Sprite number */
+    padding: 0px;
+    color: #bb0;
+}
+
+#sprite-list canvas {
+    /* Sprite icon element */
+    width: 48px;
+    height: 42px;
+    border: 1px solid #888;    
+    margin: 1px 1px 1px 1px;
+}
+
+#sprite-list canvas:hover {    
+    /* Sprite icon element - hover */
+    border: 2px solid #bb6;
+    margin: 0px 0px 0px 0px;
+}
+
+/*******************
+   General / misc    
+*******************/
+
+.header-info {
+    /* Header for blocks */
+    font-size: 30px;
+    text-align: center;    
+    margin: 0px 0px 0.5em 0px;
+    border-bottom: 1px solid white;    
+}
+
+.ink-button:hover, .movement-button:hover, .command-button:hover, .arrow-button:hover, 
+.data-selector:hover, .data-selector-off:hover, .io-item:hover, #color-list li:hover {
+    
+    /* Hover effect for buttons. */
+
+    background-color:#777;
+    border-color:#555;
+}
+
+#tooltip {
+    /* Tooltip info */
+
+    visibility: hidden;
+    position: absolute;
+    color: #FFA;    
+    font-size: 12px;
+    width: 200px;
+    z-index: 1;
+    background-color: #000A;
+    text-align: center;
+}
+
+input[type='checkbox'] {
+    /* Checkbox should be larger. */
+    width: 2em;
+    height: 2em;
+}

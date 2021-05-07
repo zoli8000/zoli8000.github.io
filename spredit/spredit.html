@@ -1,0 +1,146 @@
+<html>
+	<head>
+        <meta charset="UTF-8">        
+        <meta name="keywords" content="C64, sprite, sprite editor, Golf basic"> 
+
+        <title>Sprite editor</title>
+
+        <link rel="stylesheet" href="styles.css">
+
+        <!-- Editor global variables -->
+        <script src="spredit-globals.js"></script>    
+
+        <!-- Utils -->
+        <script src="spredit-utils.js"></script> 
+
+        <!-- Bit handling -->
+        <script src="bits.js"></script>     
+
+        <!-- Sprite compressor -->
+        <script src="sprite-compress.js"></script>    
+
+        <!-- Clipboard functions -->
+        <script src="clipboard.js"></script>    
+
+        <!-- File input / output -->
+        <script src="file-io.js"></script>  
+
+        <!-- Sprite functions -->
+        <script src="sprites.js"></script>    
+
+        <!-- Paint tools -->
+        <script src="spredit-paint-tools.js"></script>
+
+        <!-- Editor commands -->
+        <script src="spredit-commands.js"></script>
+
+        <!-- Editor GUI tools -->
+        <script src="spredit-gui.js"></script>
+
+    </head>    
+
+    <body>
+        <!-- Upper block, contains sprite editor and commands. -->
+        <div class="upper-block">
+            <div class="canvas-commands-block">
+                
+                <!-- Sprite number display, and buttons to change active sprite. -->
+                <div class="header-info"> 
+                    <span class="arrow-button" onclick="sprNoChange(-0x10)">🡀🡀</span>
+                    <span class="arrow-button" onclick="sprNoChange(-1)">🡄</span>
+                    SPRITE
+                    <span id="sprite-number"> 00</span>
+                    <span class="arrow-button"  onclick="sprNoChange(1)">🡆</span>                      
+                    <span class="arrow-button" onclick="sprNoChange(0x10)">🡂🡂</span>
+                </div>
+
+                <div id="command-wrapper">
+                    <!-- Drawing tools appear in this div.
+                    The children are added with spredit-gui/createCommands(). -->
+                </div>
+
+                <!-- Canvas - sprite editor -->
+                <canvas width=192 height=168 id="cv"></canvas>                                         
+                
+                <div><br></div>
+                
+                <div id="button-wrapper">
+                    <!-- Available inks and rotate commands will be here.
+                    The children are added with spredit-gui/createLowerCommands(). -->
+                </div>    
+
+            </div>        
+
+            <!-- Data output -->
+            <div class="data-block">
+                <div class="header-info">
+                    DATA FOR
+                    <span class="data-selector" id="data-this">THIS</span>
+                    <span class="data-selector-off" id="data-all" onclick="getAllData()">ALL</span>
+                </div>
+
+                <!-- Raw data - uncompressed -->
+                <div>
+                    <p id ="raw-text">Raw data for this sprite - 63 bytes</p>            
+                    <textarea rows=10 id="raw-block" class="data-item" onchange="codeRead()"></textarea>
+                </div>
+
+                <!-- Compressed data -->
+                <div>
+                    <p id="compr-text">Compressed data for this single sprite</p>            
+                    <textarea rows=10 id="compr-block" class="data-item" onchange="codeRead()"></textarea>
+                </div>
+
+                <div class="io-commands">
+                    <label class="io-item">
+                        📁 Load
+                        <input type="file" accept="image/png, image/gif" style="position: fixed; top: -100em" onchange="readFile(this)">
+                    </label>
+
+                    <div class="io-item" onclick="writeFile()">
+                        📁 Download                        
+                    </div>
+
+                    <div class="io-item" id="xor-button" onclick="handleXor()">
+                        ⇝ XOR sprite
+                    </div>
+
+                    <span id="xor-stat"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lower block, contains options and sprite icons/selector -->
+        <div class="lower-block">
+            <div class="option-block">
+                <div class="header-info">
+                OPTIONS
+                </div>
+
+                <div id="options">
+                    <!-- View options appear in this div: toggle grid, multicolor, compress, unused.
+                        The children are added with spredit-gui/createToggles(). -->
+                </div>
+
+                <br>
+                <div id="color-list">
+                    <!-- Selectable colors (16 of them) will appear in this div. 
+                        The children are added with spredit-gui/createColors(). -->
+                </div>
+
+            </div>
+
+            <div class="sprite-list-block">
+                <!-- This block contains the 256 sprites. -->
+                <div class="header-info">ALL SPRITES</div>
+                <div id="sprite-list"></div>
+            </div>
+        </div>
+        
+        <div id="tooltip"></div>
+        <!-- Call program init. -->
+        <script>initProg()</script>        
+    </body>
+</html>
+
+

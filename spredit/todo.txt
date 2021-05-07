@@ -1,0 +1,20 @@
+Bug/in progress list:
+    Input must be allowed in textboxes.    
+    Input from bytes is not correct with 0x values.
+    Open txt files, not only images
+    Commenting
+    Refactoring gui
+    Rearrange sprite order
+    Better ellipse, line etc. algorithms
+    Multiple undo
+
+Done:
+    Selected tool should be recolored.
+    Multicolor option does not work properly
+    Sprite number 1, 2 are not handled after +16 change - check &0xff or sprId
+    Add accessibility
+    Test decompressing compressed data
+    Xored using... hex!
+    Base calculation
+    This\All data change   
+    Refactoring tools
