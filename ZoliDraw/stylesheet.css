@@ -46,7 +46,7 @@ html, body {
 	color: white;
 	
 	}
-.menubar >ul > li:hover {		curErr
+.menubar >ul > li:hover {		
 	background-color: lightgreen;				
 	}
 	
@@ -71,17 +71,13 @@ ul, .tools > ul, .info-area > ul  {
 	display: inline-block;	
 	background-color: lightblue;		
 	border: solid black 1px;
-	margin: 1px 0px 0px 1px;
+	margin: 0px;
 	padding: 0;
-	word-wrap: break-word;
+	font-size: 30px;
+	align-content: center;
 	overflow: hidden;
 }
-.tools > ul > li > img {		
-	max-width:45px;
-	max-height:45px;		
-	width: auto;
-	height: auto;
-}
+
 .tools > ul > li:hover {		
 	background-color: white;				
 	}
