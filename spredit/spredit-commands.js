@@ -38,7 +38,6 @@ function chooseSprite(sprNo) {
     sprNumText.innerHTML = numToHex(sprActNo)
 }
 
-
 function handleXor() {
     let xorb = document.getElementById("xor-button")
     let xorStat = document.getElementById("xor-stat")
@@ -121,6 +120,12 @@ function pasteFromClipb() {
     fullRepaint()
 }
 
+function clearImage() {
+    callerFunc.saveUndo()
+
+    sprAct.clearSprite()
+    fullRepaint()
+}
 
 function scrollImage(scrollAmount) {
     /**

@@ -431,6 +431,7 @@ function createLowerCommands() {
     
     _createLower('Copy', 'movement-button','○⇥', copyToClipb)
     _createLower('Paste', 'movement-button','↦○', pasteFromClipb)
+    _createLower('Clear', 'movement-button','🗑', clearImage)
     
 
     let button = document.getElementsByClassName('ink-button')
