@@ -190,18 +190,43 @@ function getAllData() {
 
         sprRawStrAll += sprRawStr + "\n\n"
 
-    }
+    }    
 
-    let comprText = document.getElementById("compr-text")
-    comprText.innerHTML = `${totalBytes} bytes - ${Math.ceil(totalBytes / totalUncompr * 100)}%`
+    if (!totalBytes) return            
 
-    let comprBlock = document.getElementById("compr-block")    
-    comprBlock.value = sprDataStrAll
+    comprTextLabel.innerHTML = `${totalBytes} bytes - ${Math.ceil(totalBytes / totalUncompr * 100)}%`        
+    rawTextLabel.innerHTML = `${totalUncompr} bytes`
 
-    let rawText = document.getElementById("raw-text")
-    rawText.innerHTML = `${totalUncompr} bytes`
-
+    let comprBlock = document.getElementById("compr-block")        
     let rawBlock = document.getElementById("raw-block")    
+
+    comprBlock.value = sprDataStrAll    
     rawBlock.value = sprRawStrAll
 
+    setDataThis(false)
+
+}
+
+function setDataThis(setThis = true) {
+    let dataThis = document.getElementById("data-this")
+    let dataAll = document.getElementById("data-all")
+
+    let comprBlock = document.getElementById("compr-block")        
+    let rawBlock = document.getElementById("raw-block")    
+    
+    if (setThis) {
+        dataThis.setAttribute("class", "data-selector")
+        dataAll.setAttribute("class", "data-selector-off")
+        
+        comprBlock.readOnly = false
+        rawBlock.readOnly = false
+    }
+    else {        
+        dataAll.setAttribute("class", "data-selector")
+        dataThis.setAttribute("class", "data-selector-off")        
+        
+        comprBlock.readOnly = true
+        rawBlock.readOnly = true
+    }
+    
 }

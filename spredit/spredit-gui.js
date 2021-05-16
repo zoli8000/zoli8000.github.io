@@ -14,6 +14,9 @@ function initProg() {
     clipb = new Clipboard()
     undoFn = new Undo()
 
+    comprTextLabel = document.getElementById("compr-text")
+    rawTextLabel = document.getElementById("raw-text")
+
     sprColors = [0, 1, 2, 3]
     createToggles()
     createColors()
@@ -68,15 +71,6 @@ function draw_box(x, y, st, pixelw, signed = 0) {
 
 }
 
-function codeRead() {
-    let rawCode = stringToArray(stat.value)
-                
-    sprAct.data = rawCode
-                     
-    fullRepaint();    
-}
-
-
 
 function getCode() {
     let sprData = spr.getPacked(sprActNo)
@@ -108,10 +102,13 @@ function showStats() {
     */        
 }
 
-function showMap(grid) {            
+function showMap(grid) {                
+
     if (!repaint) return
 
-    ctx.fillStyle = "#000"
+    setDataThis(true)
+
+    ctx.fillStyle = "#000"    
     ctx.fillRect(0, 0, 192, 168)
 
     ctx.strokeStyle = "#FFF"
@@ -463,7 +460,10 @@ function addDataToolTips() {
 }
 
 
-function fullRepaint() {
+function fullRepaint() {    
+    // comprTextLabel.innerHTML = `Compressed data for this sprite: ${totalBytes} bytes - ${Math.ceil(totalBytes / totalUncompr * 100)}%`        
+    rawTextLabel.innerHTML = "Raw data for this sprite - 63 bytes"
+    
     repaint = true;
     showMap(grid);
     repaintIcon(sprActNo);

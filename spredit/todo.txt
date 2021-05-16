@@ -3,10 +3,8 @@ Bug/in progress list:
     Input from bytes is not correct with 0x values.
     Open txt files, not only images
     Commenting
-    Refactoring gui
     Rearrange sprite order
     Better ellipse, line etc. algorithms
-    Multiple undo
 
 Done:
     Selected tool should be recolored.
@@ -18,3 +16,5 @@ Done:
     Base calculation
     This\All data change   
     Refactoring tools
+    Multiple undo
+    Refactoring gui

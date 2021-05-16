@@ -78,20 +78,20 @@
             <div class="data-block">
                 <div class="header-info">
                     DATA FOR
-                    <span class="data-selector" id="data-this">THIS</span>
+                    <span class="data-selector" id="data-this" onclick="fullRepaint()">THIS</span>
                     <span class="data-selector-off" id="data-all" onclick="getAllData()">ALL</span>
                 </div>
 
                 <!-- Raw data - uncompressed -->
                 <div>
-                    <p id ="raw-text">Raw data for this sprite - 63 bytes</p>            
-                    <textarea rows=10 id="raw-block" class="data-item" onchange="codeRead()"></textarea>
+                    <p id ="raw-text"></p>
+                    <textarea rows=7 id="raw-block" class="data-item" onchange="codeRead()"></textarea>
                 </div>
 
                 <!-- Compressed data -->
                 <div>
-                    <p id="compr-text">Compressed data for this single sprite</p>            
-                    <textarea rows=10 id="compr-block" class="data-item" onchange="codeRead()"></textarea>
+                    <p id="compr-text"></p>            
+                    <textarea rows=7 id="compr-block" class="data-item" onchange="codeReadCompr()"></textarea>
                 </div>
 
                 <div class="io-commands">

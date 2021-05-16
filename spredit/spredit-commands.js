@@ -115,7 +115,8 @@ function copyToClipb() {
 }
 
 function pasteFromClipb() {
-    sprAct.data = clipb.getData()
+    let clipData = clipb.getData()
+    if (clipData.length >= 63) sprAct.data = clipData.slice(0, 63)
 
     fullRepaint()
 }
@@ -155,6 +156,16 @@ function rotateImage(rotateCount) {
 
 }
 
+function codeRead() {
+    let rawCode = stringToArray(stat.value)                
+    sprAct.data = rawCode                     
+    fullRepaint();    
+}
 
-
-
+function codeReadCompr() {
+    let comprStat = document.getElementById("compr-block")
+    let rawCode = stringToArray(comprStat.value)
+        
+    sprAct.data = SpriteCompress.decompress(rawCode)
+    fullRepaint();    
+}

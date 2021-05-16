@@ -24,7 +24,7 @@ function stringToArray(str) {
         }
 
         return parseInt(x, 10)
-    })
+    }).slice(0,63)
 }
 
 function numToHex(num) {

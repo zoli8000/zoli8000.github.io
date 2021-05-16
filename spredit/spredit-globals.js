@@ -31,6 +31,8 @@ var dollarUse;          // Use $ for hex. If false, use decimal numbers.
 var xoredUse;           // Use xored sprites if possible.
 
 var stat;               // Stat block
+var comprTextLabel;     // Compressed textbox label
+var rawTextLabel;       // Uncompressed textbox label 
 
 var tool;               // Tool object to be used on canvas
 

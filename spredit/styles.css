@@ -134,6 +134,7 @@
     /* Textareas for byte data I/O */
     width: 90%;
     user-select: text;
+    resize: horizontal;
 }
 
 .data-selector {

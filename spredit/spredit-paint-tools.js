@@ -100,7 +100,7 @@ function drawLine(e) {
 }
 
 function undo() {
-    callerFunc.undoChange()
+    undoFn.load(sprAct.data, sprActNo)
     fullRepaint();
 }
 
@@ -144,6 +144,7 @@ function toolStart(event) {
     callerFunc.started = true
     console.log(`Started at ${[callerFunc.startPX, callerFunc.startPY]}`)
 
+    undoFn.save(sprAct.data, sprActNo)
     callerFunc.saveUndo()
     
 }
@@ -199,14 +200,14 @@ var callerFunc = {
     mouseup: (event) => toolEnd(event) ,
     
     undoChange: () => {
-        undoFn.load(sprAct.data, sprActNo)        
+        undoFn.moveSimple(callerFunc.baseData, sprAct.data)
     },
 
     saveUndo: () => {
-        undoFn.save(sprAct.data, sprActNo)
+        undoFn.moveSimple(sprAct.data, callerFunc.baseData)
     },
-
-    undoData: null,
+    
+    baseData: Array(63),
     startX: 0,
     startY: 0,
     endX: 0,

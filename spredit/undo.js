@@ -26,4 +26,10 @@ class Undo {
         this.data[id].push(srcData)
         
     }
+
+    moveSimple(srcArr, dstArr) {        
+        for (let i = 0; i < 63; i++) {
+            dstArr[i] = srcArr[i]
+        }
+    }
 }
