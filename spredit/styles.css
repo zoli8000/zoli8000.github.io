@@ -8,7 +8,7 @@
     background-color: black;
     color: white;
     user-select: none;
-    font-family: monospace;
+    font-family: Consolas, monospace;
 }
 
 .upper-block {    
