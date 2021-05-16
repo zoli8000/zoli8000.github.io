@@ -237,8 +237,10 @@
     height: 42px;
     border: 1px solid #888;    
     margin: 1px 1px 1px 1px;
+    image-rendering: -moz-crisp-edges;
     image-rendering: pixelated;
 }
+
 
 #sprite-list canvas:hover {    
     /* Sprite icon element - hover */

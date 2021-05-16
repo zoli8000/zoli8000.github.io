@@ -1,6 +1,4 @@
 Bug/in progress list:
-    Input must be allowed in textboxes.    
-    Input from bytes is not correct with 0x values.
     Open txt files, not only images
     Commenting
     Rearrange sprite order
@@ -18,3 +16,5 @@ Done:
     Refactoring tools
     Multiple undo
     Refactoring gui
+    Input must be allowed in textboxes.    
+    Input from bytes is not correct with 0x values.
