@@ -20,6 +20,7 @@ var command;            // Axtive command functions
 var imgSprite;          // Image containing sprites (for I/O)
 
 var clipb;              // Clipboard
+var undoFn;             // Undo functions
 
 // Options
 var compr;              // Show compression data

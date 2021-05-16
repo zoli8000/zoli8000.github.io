@@ -12,6 +12,7 @@ function initProg() {
     // command = cmdPaint
 
     clipb = new Clipboard()
+    undoFn = new Undo()
 
     sprColors = [0, 1, 2, 3]
     createToggles()

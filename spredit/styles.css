@@ -133,6 +133,7 @@
 .data-item {
     /* Textareas for byte data I/O */
     width: 90%;
+    user-select: text;
 }
 
 .data-selector {
@@ -235,6 +236,7 @@
     height: 42px;
     border: 1px solid #888;    
     margin: 1px 1px 1px 1px;
+    image-rendering: pixelated;
 }
 
 #sprite-list canvas:hover {    
@@ -279,6 +281,5 @@
 
 input[type='checkbox'] {
     /* Checkbox should be larger. */
-    width: 2em;
-    height: 2em;
+    transform: scale(1.6);    
 }

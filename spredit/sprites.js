@@ -291,7 +291,8 @@ class Sprites {
                 count++
             }
         }
-    
+        
+        ctx.imageSmoothingEnabled = false
         ctx.putImageData(cvImg, x, y)
     }
 }

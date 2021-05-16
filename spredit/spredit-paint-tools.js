@@ -199,19 +199,11 @@ var callerFunc = {
     mouseup: (event) => toolEnd(event) ,
     
     undoChange: () => {
-        for (let i = 0; i < 63; i++) {
-            sprAct.data[i] = callerFunc.undoData[i]
-        }
+        undoFn.load(sprAct.data, sprActNo)        
     },
 
     saveUndo: () => {
-        if (!callerFunc.undoData) {
-            callerFunc.undoData = Array(63).fill(0)
-        }
-
-        for (let i = 0; i < 63; i++) {
-            callerFunc.undoData[i] = sprAct.data[i]
-        }
+        undoFn.save(sprAct.data, sprActNo)
     },
 
     undoData: null,
