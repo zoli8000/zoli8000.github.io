@@ -1,0 +1,49 @@
+* {
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0;
+    padding: 0;    
+    background-color: black;
+    color: white;
+}
+
+#crossword {
+    width: 550px;
+    height: 550px;    
+        
+    
+}
+#crossword div {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #444;
+    background-color: white;
+    color:black;
+    display: inline-block;
+    vertical-align: top; 
+    text-align: center;
+    padding: 3px 3px;
+    font-size: 20px;
+    position:relative;
+    left: 10px;
+}
+
+#crossword div span{
+    font-size: 14px;
+    background-color: transparent;
+    color:blue;
+    position:relative;
+    top: -6px;
+    left: -6px;
+
+}
+
+#clue-div {
+    width:550px;
+    height:200px;
+    font-size: 14px;
+}
+
+#clue-div p span{
+    color: yellow;
+    font-weight: 700;
+}
