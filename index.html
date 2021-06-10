@@ -8,19 +8,19 @@
             padding: 0;
         }
 
-        h1 {
-            font-size: 4rem;
-            font-weight: 900;
-            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-            -webkit-text-stroke: 1px black; /* width and color */
-            background: -moz-linear-gradient(#047,#48a);
-            background: linear-gradient(#047,#48a);
-            background: -webkit-linear-gradient(#047,#48a);
-            
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        h1 {    
+            background-color: #cde;
+            background: -moz-linear-gradient(#cde,#abc);
+            background: linear-gradient(#cde,#abc);
+            background: -webkit-linear-gradient(#cde,#abc);
+    
+            height: 4em;            
+            border: 1px solid #047;
+        }
 
-            
+        h1 img {
+            height: 4em;            
+            margin-left:2em;
         }
 
         h2 {
@@ -66,6 +66,11 @@
             aspect-ratio: 1;
             display: block;
             text-align: center;            
+
+            -webkit-transform: scale(1.0);
+            transform: scale(1.0);
+            -webkit-transition: 0.4s ease-in-out;
+            transition: 0.4s ease-in-out;     
         }
 
         .appitem a {
@@ -103,7 +108,7 @@
     </style>
 </head>
     <body>
-        <h1>SZOKEZ</h1>        
+        <h1><img src="szokez.png"/></h1>        
 
         <div id="app-container">
             <h2>HTML/JS Tools, Games</h2>
