@@ -2,68 +2,124 @@
 <html>
 <head>
     <style>
+        * {
+            font-family: Consolas, monospace;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            font-size: 50px;
+            font-weight: 900;
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            -webkit-text-stroke: 1px black; /* width and color */
+            background: -moz-linear-gradient(#047,#48a);
+            background: linear-gradient(#047,#48a);
+            background: -webkit-linear-gradient(#047,#48a);
+            
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+            
+        }
+
+        h2 {
+            color: #047;
+            font-weight: 900;
+            margin-top: 32px;
+            margin-bottom: 20px;
+            width: 15em;
+            border-bottom: 1px solid currentColor;
+        }
+
         #app-container {
             width: 100%;            
         }
 
         
         .appitem {
-            width: 20em;
+            width: 18em;
             height: 20em;
             display: inline-block;
+            vertical-align: top;
+            font-size: 20px;
+            font-weight: 700;
+            font-color:  #047;
+            text-align: center;
+            margin-left: 16px;
+            margin-bottom: 16px;
+        }
+
+        .appitem div {
+            font-size: 15px;
+            font-weight: 100;
+            width: 100%;
+            text-align: center;
+            font-color:  #447;
         }
 
         .appitem img{
-            width: 16em;
-            height: 16em;
+            width: 100%;
+            aspect-ratio: 1;
             display: block;
+            text-align: center;
         }
+
     </style>
 </head>
     <body>
-        <h1>GITHUB of Zoltan Szoke</h1>        
+        <h1>SZOKEZ</h1>        
 
         <div id="app-container">
-            <h2>Tools</h2>
+            <h2>HTML/JS Tools, Games</h2>
 
-            <a href="spredit/spredit.html" class="appitem">
-                <img src="spredit.JPG"/>
-                Sprite editor and compressor
-            </a>
+            <div class="appitem">
+                Sprite Editor
+                <a href="spredit/spredit.html"><img src="spredit.JPG"/></a>
+                <div>Sprite editor and compressor</div>
+            </div>
 
+            <div class="appitem">
+                Countrivia
+                <a href="countrivia/countrivia.html"><img src="countrivia.JPG"/></a>
+                <div>How much do you know about countries of the world? A crossword + blind map game.</div>
+            </div>
 
-            <a href="countrivia/countrivia.html" class="appitem">
-                <img src="countrivia.JPG"/>
-                Countrivia - how much do you know about countries of the world? A crossword + blind map game.
-            </a>
-
-            <a href="SVGCompr/index.html" class="appitem">
-                <img src="svgcompr.JPG"/>
+            <div class="appitem">
                 SVG Compressor
-            </a>
+                <a href="SVGCompr/index.html"><img src="svgcompr.JPG"/></a>
+                <div>A simple SVG compressor. May not be useful for anything. :)</div>
+            </div>
 
-            <a href="GPXCombiner/gpx.html" class="appitem">
-                <img src="gpxcomb.JPG"/>
-                A Leaflets/OSM based GPX combiner
-            </a>
+            <div class="appitem">
+                GPX Combiner
+                <a href="GPXCombiner/gpx.html"><img src="gpxcomb.JPG"/></a>
+                <div>A Leaflets/OSM based GPX visualizer. If you want to see your training data on a single map.</div>
+            </div>
+
         </div>
 
         <div id="app-container">
-            <h2>Finished game competitions</h2>            
-            <a href="Fluffline13k/Fluffline13k.html" class="appitem">
-                <img src="fluffl.JPG"/>
-                Fluffline - a JS13k competition game (javascript game in 13kb)
-            </a>
+            <h2>Game Competitions</h2>            
 
-            <a href="wrball/wrball.html" class="appitem">
-                <img src="wrball/wrball_sshot3.png"/>
-                WR-Ball - a C64 10liner - 1st place
-            </a>
+            <div class="appitem">
+                Fluffline
+                <a href="Fluffline13k/Fluffline13k.html"><img src="fluffl.JPG"/></a>
+                <div>A JS13k competition game (javascript game in 13kb)</div>
+            </div>
 
-            <a href="ships/ships.html" class="appitem">
-                <img src="ships/ship01.png"/>
-                Ships! - a C128 10liner - 3rd place
-            </a>
+            <div class="appitem">
+                WR-Ball
+                <a href="wrball/wrball.html"><img src="wrball/wrball_sshot3.png"/></a>
+                <div>A C64 10liner - 1st place in a small competition.</div>
+            </div>
+
+            <div class="appitem">
+                Ships!
+                <a href="ships/ships.html"><img src="ships/ship01.png"/></a>
+                <div>Ships! - a C128 10liner - 3rd place.</div>
+            </div>
+
         </div>
         
         <div id="app-container">                    
@@ -74,13 +130,12 @@
                 Zoli Draw - Ansi/PETSCII editor (currently broken)
             </a>
             -->
-            <a href="countrivia/countrivia.html" class="appitem">
-                <img src="countrivia.JPG"/>
-                Puzzle - find the country / city. (Not finished.)
-            </a>
+            
 
         </div>
         <h2>Links</h2>            
-        <p><a href ="https://www.codewars.com/users/zoleee80"><img src="https://www.codewars.com/users/zoleee80/badges/large"/>CodeWars profile</a></p>        
+        <p><a href ="https://www.codewars.com/users/zoleee80"><img src="https://www.codewars.com/users/zoleee80/badges/large"/>CodeWars profile</a></p>                
+        <p><a href ="https://www.hackerrank.com/szokez">HackerRank profile</a></p>                
+        
     </body>
 </html>

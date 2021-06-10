@@ -495,8 +495,8 @@ function startGame(countryData) {
         crossOrigin: 'anonymous'
     }).addTo(map);
     
-    let sw = L.latLng(-60.98155760646617, -180)
-    let ne = L.latLng(80.99346179538875, 180);
+    let sw = L.latLng(-61, -180)
+    let ne = L.latLng(81, 180);
     let bounds = L.latLngBounds(sw, ne);
     
     map.setMaxBounds(bounds);
