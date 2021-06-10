@@ -9,7 +9,7 @@
         }
 
         h1 {
-            font-size: 50px;
+            font-size: 4rem;
             font-weight: 900;
             font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
             -webkit-text-stroke: 1px black; /* width and color */
@@ -26,9 +26,10 @@
         h2 {
             color: #047;
             font-weight: 900;
-            margin-top: 32px;
-            margin-bottom: 20px;
-            width: 15em;
+            font-size: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            width: 30rem;
             border-bottom: 1px solid currentColor;
         }
 
@@ -38,31 +39,65 @@
 
         
         .appitem {
-            width: 18em;
-            height: 20em;
+            width: 20rem;
+            height: 30rem;
             display: inline-block;
             vertical-align: top;
-            font-size: 20px;
+            font-size: 1.5rem;
             font-weight: 700;
-            font-color:  #047;
+            color:  #047;
             text-align: center;
-            margin-left: 16px;
-            margin-bottom: 16px;
+            margin-left: 1rem;
+            margin-bottom: 1rem;            
         }
 
         .appitem div {
-            font-size: 15px;
+            font-size: 1rem;
             font-weight: 100;
-            width: 100%;
+            width: 20rem;
+            height: 5rem;
             text-align: center;
-            font-color:  #447;
+            color:  #447;
+            
         }
 
         .appitem img{
             width: 100%;
             aspect-ratio: 1;
             display: block;
-            text-align: center;
+            text-align: center;            
+        }
+
+        .appitem a {
+            width: 100%;
+            aspect-ratio: 1;
+            display: block;
+            overflow:hidden;   
+            border: 1px solid #447; 
+        }
+
+        .appitem a img:hover{
+            -webkit-transform: scale(1.6);
+            transform: scale(1.6);
+            -webkit-transition: 1s ease-in-out;
+            transition: 1s ease-in-out;            
+            }
+
+        li {
+            display: inline-block;
+            border: 1px solid #abc;
+            background-color: #def;
+            color: #047;
+            font-size: 1rem;
+            font-weight:300;
+            list-style-type:none;
+            margin-left: 2px;
+            margin-top: 4px;
+            padding: 4px 4px 4px;
+        }
+
+        li:hover{
+            background-color: #bce;
         }
 
     </style>
@@ -75,26 +110,30 @@
 
             <div class="appitem">
                 Sprite Editor
-                <a href="spredit/spredit.html"><img src="spredit.JPG"/></a>
-                <div>Sprite editor and compressor</div>
+                <a href="spredit/spredit.html"><img src="spredit.JPG"/></a>                
+                <div>Sprite editor and compressor. 2021.</div>
+                <ul><li>Javascript</li><li>Compression</li><li>Drawing</li><li>HTML</li><li>CSS</li><li>Completed</li></ul>
             </div>
 
             <div class="appitem">
                 Countrivia
                 <a href="countrivia/countrivia.html"><img src="countrivia.JPG"/></a>
-                <div>How much do you know about countries of the world? A crossword + blind map game.</div>
+                <div>How much do you know about countries of the world? A crossword + blind map game. 2021.</div>
+                <ul><li>Javascript</li><li>APIs</li><li>Game</li><li>HTML</li><li>CSS</li><li>In progress</li></ul>
             </div>
 
             <div class="appitem">
                 SVG Compressor
                 <a href="SVGCompr/index.html"><img src="svgcompr.JPG"/></a>
-                <div>A simple SVG compressor. May not be useful for anything. :)</div>
+                <div>A simple SVG compressor. May not be useful for anything. :) 2019.</div>
+                <ul><li>SVG</li><li>Javascript</li><li>Compression</li><li>In progress</li></ul>
             </div>
 
             <div class="appitem">
                 GPX Combiner
                 <a href="GPXCombiner/gpx.html"><img src="gpxcomb.JPG"/></a>
                 <div>A Leaflets/OSM based GPX visualizer. If you want to see your training data on a single map.</div>
+                <ul><li>API</li><li>Javascript</li><li>XML</li><li>In progress</li></ul>
             </div>
 
         </div>
@@ -105,25 +144,28 @@
             <div class="appitem">
                 Fluffline
                 <a href="Fluffline13k/Fluffline13k.html"><img src="fluffl.JPG"/></a>
-                <div>A JS13k competition game (javascript game in 13kb)</div>
+                <div>A JS13k competition game (javascript game in 13kb). 2019.</div>
+                <ul><li>Javascript</li><li>Game</li><li>Competition</li><li>Completed</li></ul>
             </div>
 
             <div class="appitem">
                 WR-Ball
                 <a href="wrball/wrball.html"><img src="wrball/wrball_sshot3.png"/></a>
-                <div>A C64 10liner - 1st place in a small competition.</div>
+                <div>A C64 10liner - 1st place in a small competition. 2018.</div>
+                <ul><li>C64</li><li>Basic</li><li>Code Golfing</li><li>Game</li><li>Competition</li><li>Completed</li></ul>
             </div>
 
             <div class="appitem">
                 Ships!
                 <a href="ships/ships.html"><img src="ships/ship01.png"/></a>
-                <div>Ships! - a C128 10liner - 3rd place.</div>
+                <div>Ships! - a C128 10liner - 3rd place.  2018.</div>
+                <ul><li>C128</li><li>Basic</li><li>Code Golfing</li><li>Game</li><li>Competition</li><li>Completed</li></ul>
             </div>
 
         </div>
         
         <div id="app-container">                    
-            <h2>In progress</h2>            
+            <h2>Others</h2>            
             <!--
             <a href="ZoliDraw/ZoliDraw.html" class="appitem">
                 <img src="zolidraw.JPG"/>
