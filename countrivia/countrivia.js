@@ -620,7 +620,7 @@ function startGame(countryData) {
         cw[puzzle.textCell].style.background = "#FFF"
 
         keypr = e.key.toUpperCase()
-        
+                
         if (keypr < "A" || keypr > "Z") return
 
         let cell = puzzle.textCell
