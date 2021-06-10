@@ -5,13 +5,74 @@
 
         <title>Countryvia</title>
 
+        <!-- Leaflet maps -->
+        <link   rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" 
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin=""/>
+
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+                integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+                crossorigin="">
+        </script>
+
         <link rel="stylesheet" href="countrivia.css">        
         <script src="countrivia.js"></script>
 
+        
+
     </head>
-    <body> 
-        <div id="crossword"></div>       
-        <div id="clue-div"></div>
-         
+    <body>  
+        <div id="title">Countrivia</div>       
+        <div id="top-block">
+
+            <div id="mapid"></div> 
+            
+            <div id="stat-block">
+                <div class="stat-name">Time</div>
+                <div class="stat-value" id = "time-val">999</div>
+
+                <div class="stat-name">Letters left</div>
+                <div class="stat-value" id = "letters-left">30/30</div>
+
+                <div class="stat-name">Pins unused</div>
+                <div class="stat-value" id = "pins-unused">10</div>
+
+                <button type="button" id="random-button">Random letter</button>
+                <button type="button" id="finished-button">Done</button>
+                
+            </div> 
+        </div> 
+        
+        <div id="bottom-block">
+            <div id="crossword"></div>       
+            <div id="clue-container">                
+            </div>
+        </div>
+        
+        <div id="help">
+            <p><span>Countrivia</span></p>
+            <p>2021, Zoltan Szoke</p>
+            <br>
+            <p><span>Help</span></p>
+            <p>You have 10 clues.</p>
+            <p>Find the country on the map, solve the crossword.</p>
+            <p>You can get one letter hint for a 50 point decrease in time.</p>
+            <p>Don't forget to beat your high score!</p>
+            <br>
+            <p><span>Disclaimers</span></p>
+            <p>Country data, map coordinates and rhymes are received from APIs, and not provided by the author of Countrivia.</p>
+            <p>A rhyme may be inappropriate, or may not rhyme depending on the exact pronunciation.</p>
+            <p>Country coordinates are sometimes the center of the country, sometimes the capital city.</p>
+            <p>Some clues may be misleading especially in case of oversea territories.</p>
+            <br>
+            <p><span>APIs used</span></p>
+            <p><a href="https://leafletjs.com/">Leaflet maps</a>
+            &nbsp;/&nbsp;
+            <a href="https://www.openstreetmap.org/copyright">Openstreetmap</a></p>
+            <p><a href="https://restcountries.eu">Rest Countries API</a></p>
+            <p><a href="https://rhymebrain.com/api.html">Rhymes API</a></p>   
+            <br>
+            <p>Thanks for providing great and free APIs!</p>
+        </div>
     </body>
 </html>

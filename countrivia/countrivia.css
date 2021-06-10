@@ -4,14 +4,73 @@
     padding: 0;    
     background-color: black;
     color: white;
+    user-select: none;
 }
 
-#crossword {
-    width: 550px;
-    height: 550px;    
-        
+#title {
+    font-size: 60px;
+    text-align: center;
+    font-weight: 900;    
+    -webkit-text-stroke: 1px white; /* width and color */
     
+    width: 60%;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;    
+    
+    background: -moz-linear-gradient(red,yellow);
+    background: linear-gradient(red,yellow);
+    background: -webkit-linear-gradient(red,yellow);
+    
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
+
+#top-block {
+    width: 60%;
+    height: 35%;
+
+}
+
+
+#mapid {
+    height: 90%;
+    width: 60%;
+    /*min-width: 500px; */
+    border: 1px solid #333;
+    display: inline-block;
+}
+
+#stat-block {
+    height: 90%;
+    width: 35%;
+    border: 1px solid #333;
+    display: inline-block;
+    font-size: 20px;
+    vertical-align: top;    
+}
+
+#bottom-block {
+    width: 60%;
+    height: 60%;
+    display: inline-block;
+}
+
+
+
+#crossword {
+    width: 60%;
+    height: 100%;    
+    display: inline-block;
+    text-align: center;
+}
+
+#clue-container {
+    width:38%;
+    height:100%;
+    font-size: 14px;
+    display: inline-block;
+}
+
+
 #crossword div {
     width: 30px;
     height: 30px;
@@ -37,13 +96,93 @@
 
 }
 
-#clue-div {
-    width:550px;
-    height:200px;
-    font-size: 14px;
+
+
+#clue-container div {
+    width: 90%;    
+    display: inline-block;
+    vertical-align: top;    
+    border-radius: 3px;
+    margin-top: 2px;
 }
 
-#clue-div p span{
+#clue-container div .clue-num {
+    width: 40px;
+    height: 30px;    
+    display: inline-block;
+    font-size: 20px;
+    vertical-align: middle;
+    text-align: center;
+    color: #48a;
+    border-radius: 15px;
+    background-color: #0008;
+    border: 1px solid #444;
+}
+
+#clue-container div .clue-data{    
+    display: inline-block;
+    width: 80%;
+    padding: 4px 4px;
+    background: transparent;
+    color: #aff;
+}
+
+#clue-container div span{
+    color: #48a;
+    font-weight: 700;    
+    background-color: #0004;
+}
+
+
+
+.stat-name{
+    display: inline-block;
+    color: white;
+    display: inline-block;
+    width: 45%;
+    margin: 10px 10px;
+}
+
+.stat-value{
+    display: inline-block;
     color: yellow;
-    font-weight: 700;
+    font-weight: 800;
+    display: inline-block;
+    width: 40%;
+    margin: 10px 10px;
+}
+
+.pin-icon {
+    font-size: 15px;
+    border-radius: 10px;    
+    text-align: center;
+    vertical-align: middle;
+    background: radial-gradient(#aff, #48a);
+    color: black;
+    font-weight:bolder;
+}
+
+#help {
+    width: 30%;
+    float: right;
+    vertical-align: top;
+}
+#help p {
+    color:#aff;    
+}
+#help span {
+    font-weight: 900;
+    color: #48a;
+    font-size: 20px;
+    margin: 20px 0px 0px 10px;
+}
+
+button {
+    width: 40%;    
+    font-size: 15px;
+    background-color: #aff;
+    font-weight: 600;
+    color: #268;
+    border-radius: 5px;
+    border-color: #268;
 }

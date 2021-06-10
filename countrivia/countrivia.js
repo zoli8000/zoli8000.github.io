@@ -5,7 +5,14 @@
 const EMPTY = '.'
 const SIZE = 12
 const USABLE_WORDS = 40
-const PUZZLE_TRIES = 5
+const PUZZLE_TRIES = 10
+const WORDS_NEEDED = 10
+const DIR_CHARS = ['🡇','🡆']
+
+/*
+    Sometimes capital, sometimes center
+    Adjacent cities: oversea territories
+*/
 
 // Fetch data from Rest Countries API
 
@@ -22,12 +29,12 @@ class Clues {
                 'country': [ 
                     ['A country in {subregion}, with a population of {population}.', [this.getSubRegion, this.getPopulation]],
                     ['Its capital city is {capital}.', [this.getCapital]],
-                    ['This country is a member of {regionalblock}.', [this.getBlock]],
+                    ['This country is a member of {regionalblock}, and its letter are {letters}.', [this.getBlock, this.getLetters]],
                     ['A country bordered by {borders}.', [this.getBorders]]
                 ],
                 'capital': [
                     ['The capital of {country}.', [this.getCountry]],
-                    ['A capital in {subregion} region, rhymes with {capital_rhyme}.', [this.getSubRegion, this.capitalRhyme]], 
+                    ['A capital in {subregion} region, may rhyme with {capital_rhyme}.', [this.getSubRegion, this.capitalRhyme]], 
                     ['A capital adjacent to {neighborCapital}.', [this.getNeighborCapital]]
                 ],
                 'currency': [
@@ -36,7 +43,7 @@ class Clues {
                 ],
             
                 'code': [
-                    ['The 3 letter country code of a member of {regionalblock}.', [this.getBlock]],
+                    ["The 3 letter country code of a member of {regionalblock}, the countrie's letters are {letters}.", [this.getBlock, this.getLetters]],
                     ['The 3 letter country code of a country in {subregion} region, with a population of {population}.', [this.getSubRegion, this.getPopulation]]
                 ]
             }
@@ -60,9 +67,14 @@ class Clues {
         let capital = obj._cd[id].capital 
         const response = await fetch(`https://rhymebrain.com/talk?function=getRhymes&word=${capital}`);
         const rhymes = await response.json();
+        const rhymeId = Math.floor(Math.random()*5)
+        const bestRhyme = rhymes[rhymeId].word
+        return await bestRhyme
+    }
 
-        const bestRhyme = rhymes[0].word
-        return bestRhyme
+    getLetters(obj, id) {
+        let letters = normalize(obj._cd[id].name).toUpperCase().split('').sort().join('')
+        return letters
     }
 
     getPopulation(obj, id) {
@@ -102,31 +114,39 @@ class Clues {
         return this._cd[this._cd._alpha3[alpha]]
     } 
 
-    getClue(solutionType, id) {
+    getClue(idx, solutionType, id) {
         let goodClue = false
-        let clue
+        let clueRes = {}
+        let clue      
+        let tries = 20
 
         while (!goodClue) {
+            tries--
+            if (tries < 0) {
+                return [undefined, undefined]
+            }
+
             let rnd = Math.floor(Math.random()*this.clueTemplates[solutionType].length)
             let clueObj = this.clueTemplates[solutionType][rnd]
 
-            clue = clueObj[0]
+            clue = clueObj[0]            
+            clueRes = {}
+
+
             let clueFuncs = clueObj[1]
-        
             goodClue = true
 
-            clueFuncs.forEach( (clueResult) => {
-                let cr = clueResult(this, id)
-                
-                if (!cr) goodClue = false
+            clueRes.text = clue
+            clueRes.promises = [idx]
 
-                let result = `<span>${cr}</span>`
-                clue = clue.replace(/[{].*?[}]/, result)
-            })    
-            
-        }
-
-        return clue
+            clueFuncs.forEach( (clueFn) => {                
+                let res = clueFn(this, id)                                                
+                clueRes.promises.push(Promise.resolve(res))
+                if (!res) goodClue = false
+            })                
+        }                
+        
+        return clueRes
     }    
 }
 
@@ -173,10 +193,14 @@ class PuzzleItems {
 
 class Puzzle {
     constructor(countryData) {
+        this.countryData = countryData
+    }
+
+    shuffle() {
         this.crossWordData = null
         this.clear()
         
-        this._piObj = new PuzzleItems(countryData)
+        this._piObj = new PuzzleItems(this.countryData)
         this._piObj.addAllValid()
         this._pi = this._piObj._possibleItems
     }
@@ -258,14 +282,14 @@ class Puzzle {
         return wordScore
     }
     
-    drawOnDocument() {
+    drawOnDocument(cwData) {
         /* Draw letters from crossWordData on document */
 
         let cw = document.getElementById("crossword").querySelectorAll("div")
     
         for (let i = 0; i < SIZE*SIZE; i++) {
             let letterItem = cw[i]
-            let letter = this.crossWordData[i]
+            let letter = cwData[i]
     
             if (letter == EMPTY) { letterItem.style.background = "#000" }
             else { letterItem.innerHTML = letter }
@@ -312,7 +336,7 @@ class Puzzle {
 
         let firstWord = this.puzzleWords[Math.floor(Math.random()*5)]
         this.addWord(firstWord, 1, 8, true)
-        solutions[firstWord] = {x: 1, y: 8, dir: 1}
+        solutions[firstWord] = {x: 1, y: 8, dir: 1, index: 8*SIZE+1, pos: 8*SIZE+1, key: firstWord}
     
         // Add 9 other words
         for (let randomId = 0; randomId < 9; randomId++) {        
@@ -352,7 +376,7 @@ class Puzzle {
                     
             if (bestPlace > 0) {            
                 puzzleScore += bestPlace
-                solutions[this.puzzleWords[wordId]] = {x: bestX, y: bestY, dir: bestDir}
+                solutions[this.puzzleWords[wordId]] = {x: bestX, y: bestY, dir: bestDir, index: bestX + bestY*SIZE + bestDir/2, pos: bestX + bestY*SIZE, key:this.puzzleWords[wordId]}
                 // console.log(`Added ${puzzleWords[i]} at ${bestX}, ${bestY}, score ${bestPlace}`)
             }
     
@@ -387,16 +411,24 @@ class Puzzle {
         this.crossWordData = [...bestCW]
         this.solution = bestSolution
 
-        console.log(`Best score: ${bestScore}, lines: ${bestSolution.length}`)
+        console.log(`Best score: ${bestScore}, lines: ${Object.keys(bestSolution).length}`)
 
+        this.coords = Object.values(bestSolution)
+        this.coords = this.coords.sort((a, b) => a.index-b.index)
         
-        for (const k in bestSolution) {
-            let index = bestSolution[k].x + bestSolution[k].y*SIZE
-                    
-            this.coords.add(index)
-        }
+        let set = new Set(this.coords.map(a => a.index))
+        let coordsUnique = Array.from(set.values())
 
-        this.coords = [...this.coords].sort((a, b) => a-b)
+        // Couldn't find a puzzle with 10 words
+        if (Object.keys(puzzle.solution).length != WORDS_NEEDED) return
+
+        for (let i = 0; i < WORDS_NEEDED; i++) {
+            let c = this.coords[i]
+            c.id = i
+            c.clueId = coordsUnique.indexOf(c.index)+1
+            c.clueStr = `${c.clueId}${DIR_CHARS[c.dir]}`
+        }
+        
     }
 }
 
@@ -432,31 +464,186 @@ function createView() {
 
 
 function startGame(countryData) {
+    var txt = new Array(WORDS_NEEDED).fill("")
+    var clueArr = []
+    // var idx
     
-    clues = new Clues(countryData)
-    puzzle = new Puzzle(countryData)
-    
-    createView()
-    
-    puzzle.createBest(PUZZLE_TRIES)
+    var map                                 // Leaflet map
+    var markers = new Array(10)             // Markers used
+    var actMarker
 
-    puzzle.drawOnDocument()    
-    
+    var timeLeft = 999
+    var timeLeftElement = document.getElementById("time-val")
 
-    /* Clue box */
-    let clueDiv = document.getElementById("clue-div")
-    let clueText= ""
-    for (const k in puzzle.solution) {
-        clueText += "<p>" + clues.getClue(puzzle.puzzleData[k].countryField, puzzle.puzzleData[k].countryId) + "</p>"
-    }   
-    clueDiv.innerHTML = clueText
+    let finBut = document.getElementById("finished-button")
+    finBut.onclick = gameFinished
 
-    let cw = document.getElementById("crossword").querySelectorAll("div")
-    for (let i = 0; i < puzzle.coords.length; i++) {
-        let index = puzzle.coords[i]
-        cw[index].innerHTML = "<span>"+(i+1)+"</span>"+cw[index].innerHTML
+    // Add clue list
+    let cd = document.getElementById("clue-container")
+    for (let i = 0; i < WORDS_NEEDED; i++) {
+        let clueDiv = document.createElement("div")
+        clueDiv.setAttribute("class", "clue-item")
+        cd.appendChild(clueDiv)
     }
 
+    // Init Leaflet map                
+    map = L.map('mapid', {minZoom: 1.2, maxZoom: 5});
+
+    mapl = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        noWrap: true,
+        crossOrigin: 'anonymous'
+    }).addTo(map);
     
+    let sw = L.latLng(-60.98155760646617, -180)
+    let ne = L.latLng(80.99346179538875, 180);
+    let bounds = L.latLngBounds(sw, ne);
+    
+    map.setMaxBounds(bounds);
+    map.setView(new L.LatLng(0, 0), 1.2)
+
+    map.on('drag', function() {
+        map.panInsideBounds(bounds, { animate: false });
+    });
+
+    var timerFunc = setInterval(function() {
+        if (timeLeft > 0) timeLeft--
+        timeLeftElement.innerHTML = String(timeLeft)
+    }, 500)
+    clues = new Clues(countryData)
+    puzzle = new Puzzle(countryData)
+    puzzle.solution = []
+
+    createView()
+
+    while (Object.keys(puzzle.solution).length != WORDS_NEEDED) {
+        puzzle.shuffle()
+        puzzle.createBest(PUZZLE_TRIES)
+    }
+    
+    puzzle.drawOnDocument(puzzle.crossWordData)        
+
+    var cw = document.getElementById("crossword").querySelectorAll("div")
+    for (let i = 0; i < puzzle.coords.length; i++) {
+        let o = puzzle.coords[i]
+        let index = o.pos
+        console.log(index)
+        cw[index].innerHTML = '<span>'+(o.clueId)+"</span>"+cw[index].innerHTML
+    }
+
+    /* Clue box */    
+    let clueDivs = document.getElementById("clue-container").getElementsByClassName("clue-item")
+
+    let clueText= ""
+    
+    function selectPin(element, id) {
+        var clueDivs = document.getElementById("clue-container").getElementsByClassName("clue-item")
+
+        for (let i = 0; i < WORDS_NEEDED; i++) {
+            clueDivs[i].style.background = "#000"
+        }
+        element.style.background = "#046"
+        actMarker = id
+
+        cw[puzzle.textCell].style.background = "#FFF"
+        setTextPosFromWord(id)
+        cw[puzzle.textCell].style.background = "#CCC"
+
+
+    }
+
+    idx = 0
+    for (const k in puzzle.solution) {       
+        let kId = puzzle.solution[k].id         
+        clueRes = clues.getClue(kId, puzzle.puzzleData[k].countryField, puzzle.puzzleData[k].countryId)
+        txt[kId] = clueRes.text
+        // clueArr.push(clueRes)        
+
+        Promise.all(clueRes.promises).then(
+            // (res) => { clueDiv.innerHTML += "<p>" + clueRes.text + res[0] + "</p>" } 
+            (res) => { 
+                let finalClue   
+                
+                // First element is index
+                let localIdx = res.shift()
+
+                clueNum = `<div class="clue-num">${puzzle.coords[localIdx].clueStr}</div>`
+
+
+                finalClue = `${txt[localIdx]}`
+
+                for (r of res) {
+                    let subs = `<span>${r}</span>`
+                    finalClue = finalClue.replace(/[{][^}]+?[}]/i, subs)
+                }
+
+                console.log(localIdx)   
+                clueDivs[localIdx].innerHTML = clueNum + '<div class="clue-data">' + finalClue + "</div>"
+
+                clueDivs[localIdx].onclick = ( () => selectPin(clueDivs[localIdx], localIdx));
+            }
+        ) 
+    
+    }       
+
+    
+    for (let i = 0; i < WORDS_NEEDED; i++) {
+        let k = puzzle.coords[i].key
+        let iconHtml = String(puzzle.coords[i].clueId)
+        let countryId = puzzle.puzzleData[k].countryId
+        let [xc, yc] = countryData[countryId].latlng
+        let myIcon = L.divIcon({className: 'pin-icon', html: iconHtml, iconSize:L.point(20, 20)});
+        markers[i] = L.marker([xc, yc], {icon: myIcon}).addTo(map);
+    }
+        
+    setTextPosFromWord(0)
+    selectPin(clueDivs[0], 0)
+
+    function setTextPosFromWord(id) {
+        puzzle.textCell = puzzle.coords[id].pos
+        puzzle.textStart = puzzle.coords[id].pos
+        puzzle.textDir = puzzle.coords[id].dir
+    }
+    
+    function onMapClick(e) {
+        markers[actMarker].setLatLng(e.latlng);
+    }
+    document.addEventListener("keypress", typeLetter);
+
+    map.on('click', onMapClick);
+    
+    function gameFinished() {
+        alert("Finished")
+    }
+
+    function typeLetter(e) {
+        cw[puzzle.textCell].style.background = "#FFF"
+
+        keypr = e.key.toUpperCase()
+        
+        if (keypr < "A" || keypr > "Z") return
+
+        let cell = puzzle.textCell
+
+        cw[cell].innerHTML = keypr
+        puzzle.crossWordData[cell] = keypr        
+
+        if (puzzle.textDir) {
+            puzzle.textCell++
+        } else {
+            puzzle.textCell += SIZE
+        }
+
+        cell = puzzle.textCell
+
+        if ( puzzle.crossWordData[cell] == EMPTY || 
+             (cell % SIZE == 0 && puzzle.textDir) ||
+             cell >= SIZE*SIZE
+            ) {
+            puzzle.textCell = puzzle.textStart            
+        }
+
+        cw[puzzle.textCell].style.background = "#CCC"
+    }
     // for (let i = 0; i < )
 }
