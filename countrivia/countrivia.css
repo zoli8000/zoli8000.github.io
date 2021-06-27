@@ -1,9 +1,12 @@
+body {    
+    background-color: #000;
+    color: white;
+}
+
 * {
     font-family: 'Courier New', Courier, monospace;
     margin: 0;
-    padding: 0;    
-    background-color: black;
-    color: white;
+    padding: 0;        
     user-select: none;
 }
 
@@ -160,6 +163,10 @@
     background: radial-gradient(#aff, #48a);
     color: black;
     font-weight:bolder;
+}
+
+.pin-icon-sol {
+    background: radial-gradient(#8f8, #4a4);
 }
 
 #help {

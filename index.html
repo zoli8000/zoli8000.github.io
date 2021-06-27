@@ -106,6 +106,46 @@
         }
 
     </style>
+    <script>
+        var sets
+        function init() {
+            document.querySelectorAll('li').forEach(item => {
+                item.addEventListener('click', event => { 
+                    filterTag(item, event) 
+                })
+                console.log(item)
+            })
+
+            sets = new Set()
+            
+        }
+
+        function filterTag(item, event) {
+            let flt = item.innerHTML
+            console.log(flt)
+            // sets.insert(flt)
+
+            let apps = document.querySelectorAll(".appitem")
+
+            for (app of apps) {
+                // Check if it has tag
+                let found = false
+                for (tag of app.querySelectorAll("li")) {
+                    if (tag.innerHTML == flt) {
+                        found = true
+                        break
+                    }
+                }
+
+                if (!found) {
+                    app.style.display="none"
+                }
+
+            }
+
+
+        }
+    </script>
 </head>
     <body>
         <h1><img src="szokez.png"/></h1>        
@@ -183,6 +223,7 @@
         <h2>Links</h2>            
         <p><a href ="https://www.codewars.com/users/zoleee80"><img src="https://www.codewars.com/users/zoleee80/badges/large"/>CodeWars profile</a></p>                
         <p><a href ="https://www.hackerrank.com/szokez">HackerRank profile</a></p>                
-        
+        <!-- Call program init. -->
+        <script>init()</script>   
     </body>
 </html>

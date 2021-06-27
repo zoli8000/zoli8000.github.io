@@ -282,7 +282,7 @@ class Puzzle {
         return wordScore
     }
     
-    drawOnDocument(cwData) {
+    drawOnDocument(cwData, solved=false) {
         /* Draw letters from crossWordData on document */
 
         let cw = document.getElementById("crossword").querySelectorAll("div")
@@ -292,7 +292,11 @@ class Puzzle {
             let letter = cwData[i]
     
             if (letter == EMPTY) { letterItem.style.background = "#000" }
-            else { letterItem.innerHTML = letter }
+            else { 
+                if (solved) {
+                    letterItem.innerHTML = letter 
+                }
+            }
         }
     }
     
@@ -471,12 +475,11 @@ function startGame(countryData) {
     var map                                 // Leaflet map
     var markers = new Array(10)             // Markers used
     var actMarker
-
-    var timeLeft = 999
+    
     var timeLeftElement = document.getElementById("time-val")
 
     let finBut = document.getElementById("finished-button")
-    finBut.onclick = gameFinished
+    finBut.onclick = function() { gameFinished(puzzle) }
 
     // Add clue list
     let cd = document.getElementById("clue-container")
@@ -507,12 +510,14 @@ function startGame(countryData) {
     });
 
     var timerFunc = setInterval(function() {
-        if (timeLeft > 0) timeLeft--
-        timeLeftElement.innerHTML = String(timeLeft)
+        if (puzzle.timeLeft > 0) puzzle.timeLeft--
+        timeLeftElement.innerHTML = String(puzzle.timeLeft)
     }, 500)
     clues = new Clues(countryData)
     puzzle = new Puzzle(countryData)
     puzzle.solution = []
+
+    puzzle.timeLeft = 999
 
     createView()
 
@@ -587,11 +592,9 @@ function startGame(countryData) {
     }       
 
     
-    for (let i = 0; i < WORDS_NEEDED; i++) {
-        let k = puzzle.coords[i].key
-        let iconHtml = String(puzzle.coords[i].clueId)
-        let countryId = puzzle.puzzleData[k].countryId
-        let [xc, yc] = countryData[countryId].latlng
+    for (let i = 0; i < WORDS_NEEDED; i++) {        
+        let iconHtml = String(puzzle.coords[i].clueId)        
+        let [xc, yc] = [0, 0]
         let myIcon = L.divIcon({className: 'pin-icon', html: iconHtml, iconSize:L.point(20, 20)});
         markers[i] = L.marker([xc, yc], {icon: myIcon}).addTo(map);
     }
@@ -612,8 +615,56 @@ function startGame(countryData) {
 
     map.on('click', onMapClick);
     
-    function gameFinished() {
-        alert("Finished")
+    function gameFinished(puzzle) {
+        getScore(puzzle)
+    }
+    
+    function getScore(puzzle) {        
+        var dist = 0
+
+        for (let i = 0; i < WORDS_NEEDED; i++) {
+            let iconHtml = String(puzzle.coords[i].clueId)        
+            let k = puzzle.coords[i].key
+            let countryId = puzzle.puzzleData[k].countryId                        
+            let [xc, yc] = countryData[countryId].latlng
+            let myIcon = L.divIcon({className: 'pin-icon pin-icon-sol', html: iconHtml, iconSize:L.point(20, 20)});
+            let sol = L.marker([xc, yc], {icon: myIcon}).addTo(map);
+            L.polyline([[xc, yc], markers[i]._latlng]).addTo(map);            
+            
+            // Score: 1 point for 5000km distance. Maximum is 10 points for less than 500km.
+            let distScore = Math.round(Math.min(10, Math.max(0, (5000000 - markers[i]._latlng.distanceTo(sol._latlng)) / 500000)), 0)
+            console.log(`${i+1} ${distScore}`)
+            dist += distScore
+        }
+
+        let pinMulti = dist / 100
+
+        let cw = document.getElementById("crossword").querySelectorAll("div")
+        var cwData = puzzle.crossWordData
+        var maxLetters = 0
+        var letterScore = 0
+
+        for (let i = 0; i < SIZE*SIZE; i++) {
+            let letterItem = cw[i]
+            let letter = cwData[i]
+    
+            
+            if (letter != EMPTY) { 
+                maxLetters++
+               if (letterItem.innerHTML.slice(-1) == letter) {
+                    letterScore++
+                }
+            }
+        }
+
+        // ToDo: each word: 10 points. Half of the letters okay for that word: 5 points. (Eg. 0, 3, 6 or 10 for 3 letter codes.)
+        let letterMulti = letterScore / maxLetters
+
+        // console.log(`Letter score: ${letterScore} / ${maxLetters}`)
+
+        let totalScore = puzzle.timeLeft * letterMulti * pinMulti
+
+        alert(`Total score: ${totalScore} (${puzzle.timeLeft}*${letterMulti}*${pinMulti})`)
     }
 
     function typeLetter(e) {
