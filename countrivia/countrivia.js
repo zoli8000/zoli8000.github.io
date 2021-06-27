@@ -652,7 +652,11 @@ function startGame(countryData) {
             if (letter != EMPTY) { 
                 maxLetters++
                if (letterItem.innerHTML.slice(-1) == letter) {
+                    letterItem.style.background = "#8F8"
                     letterScore++
+                } else {
+                    letterItem.innerHTML = letter
+                    letterItem.style.background = "#F88"
                 }
             }
         }
