@@ -2,17 +2,19 @@
 // var possibleItems = null              // Possible data items
 // var puzzleData                        // Puzzle data
 
+/* ToDo:
+    Exclude: Antarctica, small oversea territories, "countries" smaller than 10.000.
+    Expand: clues, especially for 3 letter codes.
+    Remove clue combination (same number if both start in the same cell.)
+    Check country GPS for largest countries - geographical center or capital city?
+*/
+
 const EMPTY = '.'
 const SIZE = 12
 const USABLE_WORDS = 40
 const PUZZLE_TRIES = 10
 const WORDS_NEEDED = 10
 const DIR_CHARS = ['🡇','🡆']
-
-/*
-    Sometimes capital, sometimes center
-    Adjacent cities: oversea territories
-*/
 
 // Fetch data from Rest Countries API
 
