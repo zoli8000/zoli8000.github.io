@@ -1,0 +1,104 @@
+
+* {
+    user-select: none;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+ #main{
+     
+    width: 100%;    
+    height: 100vh;
+    display: flex;
+    align-content: center;
+    
+ }
+
+#app-holder{
+    width: 1000px;
+    height: 600px;        
+    margin: auto;     
+    display: flex;
+    
+    flex-direction: column;        
+}
+
+#photo-holder{
+    width: 1000px;
+    height: 400px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+}
+
+.arrow {
+    height: 100%;
+    width: 100px;
+    text-align: center;        
+}
+
+.arrow img{
+    padding-top: 180px;
+}
+
+#right-arr{
+    transform: scaleX(-1);
+}
+
+#photo {
+    width: 980px;
+    height: 100%;
+    background-color: red;        
+    position: relative;
+}
+
+#photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit:cover;
+    object-position: 50% 50%;
+}
+.arrow:hover{
+    background-color: #ccc;
+}
+
+#thumbnails{
+    text-align: center;        
+}
+
+#thumbnails img {
+    width: 100px;
+    height: 100px;
+    padding: 5px;
+    background-color: #ddd;
+    margin: 5px 5px 0px 0px;
+}
+
+#thumbnails img .selected{
+    background-color: greenyellow;
+}
+
+#photo-text{
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    height: 100px;
+    background-color: #000a;
+    padding: 10px;
+    box-sizing: border-box;    
+}
+
+#photo-label{
+    color: white;
+    font-size: 20px;
+}
+
+#photo-description{
+    margin-top: 20px;
+    color: #ccc;
+}
+
+#photo-description a {
+    color: #aaf;
+}
