@@ -76,6 +76,7 @@
             var fileList = []                       // Files opened
             var poly = []                           // All poly items
             var hov                                 // Hover tooltip
+            var filesLoaded = []
             
             // var mapLayer                            // Layer for lines
             // var selectedLayer                       // Layer for selected lines
@@ -273,10 +274,10 @@
             }
                        
 
-            function handleGPX(e) { 
+            function handleGPX(e, fname) { 
 					// fileList.value = this.result; 
                     var coords = [];
-                    xmlDoc = parser.parseFromString(this.result,"text/xml");
+                    xmlDoc = parser.parseFromString(e.currentTarget.result,"text/xml");
 
                     var pt = xmlDoc.getElementsByTagName("trkpt");                                    
                     var lastp = L.latLng(0, 0);                    
@@ -297,6 +298,7 @@
                     // let s = L.LineUtil.simplify(coords, maxSimp.value);
                     // layerData.push(simplify(coords));
                     layerData.push(coords);
+                    filesLoaded.push(fname)
                     file_count--;
                     if (!file_count) showMap();
 				};
@@ -320,6 +322,7 @@
                     layerData = []
                     polyProps = []
                     fileList = []
+                    filesLoaded = []
 
                     poly.forEach(p => {
                         map.removeLayer(p);
@@ -353,7 +356,7 @@
                 
                 var fr=new FileReader();  
                 fr.readAsText(file);
-                fr.onload = handleGPX;                        
+                fr.onload = (e) => handleGPX(e, file.name);                        
             }
 
             function simplify(arr) {                                
@@ -416,6 +419,8 @@
                     t = poly[min_id[0]]
                     */
                     fnum = poly_id[t.sourceTarget._leaflet_id];
+
+                    alert(filesLoaded[fnum])
                     document.querySelectorAll("li").forEach(l=>{                    
                         l.style.backgroundColor="#EEE";                    
                     });
@@ -431,7 +436,7 @@
 
                     // Show layer item
                     l.scrollIntoView();
-                    generateLayers();
+                    // generateLayers();
                 }
                 
                 var toleranceRender = L.canvas({ padding: 0.5, tolerance: 10 });
