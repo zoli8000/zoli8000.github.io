@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tokenizer Demo</title>
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Monaco loader -->
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs/loader.js"></script>
+  <!-- JSON Viewer -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-jsoneditor@latest/themes/jse-theme-dark.css">
+  <script type="module" crossorigin src="./assets/index-Du-nyWtZ.js"></script>
+</head>
+<body class="m-0 h-screen flex font-sans">
+  <div class="top-2 left-2 z-10 bg-gray-800 text-white px-2 py-1 rounded">
+    <label for="lang" class="mr-2">Language:</label>
+    <select id="lang" class="bg-gray-700 text-white p-1 rounded">
+      <option value="basicv2">BASIC V2</option>
+      <option value="golfbasic">GolfBASIC</option>
+    </select>
+  </div>
+
+  <!-- Left side: Monaco -->
+  <div id="editor" class="w-1/2 h-full border-r"></div>
+
+  <!-- Right side: Output -->
+  <div id="output" class="w-1/2 flex flex-col">
+    <div id="tokens" class="flex-1 overflow-auto border-b p-2"></div>
+    <pre id="bytecode" class="flex-1 overflow-auto p-2 bg-gray-100 font-mono whitespace-pre-wrap"></pre>
+  </div>
+
+  <!-- Compiled TypeScript -->
+
+</body>
+</html>
