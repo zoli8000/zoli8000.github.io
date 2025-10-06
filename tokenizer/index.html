@@ -10,17 +10,62 @@
   <!-- JSON Viewer -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-jsoneditor@latest/themes/jse-theme-dark.css">
 <style>
-  .jse-table-cell.column-bytes .jse-value {
-    min-width: 10ch;
+  tr td:nth-child(4),
+  tr td:nth-child(6) {
     max-width: 20ch;
-    color: green;
+    min-width: 20ch;
+    width: 20ch;
+    overflow: hidden;
     text-overflow: ellipsis;
-    overflow: hidden;       /* Needed for ellipsis */
-    white-space: nowrap;    /* Needed for ellipsis */
+    white-space: nowrap; /* single line truncation */
+  }
+
+    tr td:nth-child(4):hover,
+  tr td:nth-child(6):hover {
+      min-width: 20ch;
+    width: auto;
+    max-width: 30ch;
+    overflow: auto;
+    word-break: break-word;
+  }
+  .data-line{
     font-family: monospace;
+    white-space: pre;
+    line-height: 1.2em;
+    margin-bottom: 0.2em;
+    color: white;
+  }
+
+  .data-line .bytes {
+      display: inline-block;
+      width: 54ch;
+  }
+
+  .data-line .address {
+      display: inline-block;
+      width: 3em;
+      margin-right: 1em;
+      color: yellow;
+      font-weight: 700;
+  }
+  .data-line .LABEL {
+      color: lightgreen;
+      font-weight: 700;
+  }
+  .data-line .CMD {
+      color: cyan;
+      font-weight: 700;
+  }
+  .data-line .NUM {
+      color: yellow;
+      font-weight: 700;
+  }
+  .data-line .STR {
+      color: orange;
+      font-weight: 700;
   }
 </style>
-  <script type="module" crossorigin src="./assets/index-Cp8yfLvG.js"></script>
+  <script type="module" crossorigin src="./assets/index-BS6-H-09.js"></script>
 </head>
 <body class="m-0 h-screen flex font-sans">
   <div class="top-2 left-2 z-10 bg-gray-800 text-white px-2 py-1 rounded">
@@ -36,8 +81,10 @@
 
   <!-- Right side: Output -->
   <div id="output" class="w-1/2 flex flex-col">
-    <div id="tokens" class="flex-1 overflow-auto border-b p-2"></div>
-    <pre id="bytecode" class="flex-1 overflow-auto p-2 bg-gray-100 font-mono whitespace-pre-wrap"></pre>
+    <div id="tokens" class="flex-1 overflow-auto bg-gray-900 border-b p-2"></div>
+    <pre id="bytecode" class="flex-1 overflow-auto p-2 bg-gray-900 font-mono whitespace-pre-wrap"></pre>
+    <div id="dim-data" class="overflow-auto bg-gray-900 text-gray-100 border-b p-2 h-[7em]"></div>
+    <div id="directives" class="overflow-auto bg-gray-900 text-gray-100 border-b p-2 h-[10em]"></div>
   </div>
   <div id="version" class="absolute bottom-2 right-2 text-gray-500 text-sm"></div>
 
