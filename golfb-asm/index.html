@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+
+  <script type="module" crossorigin src="./assets/index-Ba6OgWsM.js"></script>
+</head>
+
+<body>
+
+    <canvas id="canvas" width="384" height="272" style="width:90vw;height:90vh;"></canvas>
+    <div id="emulator-keys-display"></div>
+    <div id="emulator-stats"></div>
+    <script>
+        if (global === undefined) {
+            var global = window;
+        }
+        var gb
+        var bus
+        var statCount = 0
+        var fps = 0
+
+        function showStats() {
+            statCount++
+
+            const element = document.getElementById('emulator-stats')
+            if (!gb) return
+
+            const stats = gb.getStats()
+            gb._taint.disable()
+            element.innerText = `PC: ${gb.hex(gb._bus.bus.cpu.pc, 4)}, currBasPtr: ${gb.hex(gb.token.currBasPtr.value, 4)}  fps: ${fps}`
+            gb._taint.enable()
+
+            if (statCount % 4 == 0) {
+                fps = (gb._fr - gb._last_fr)
+                gb._last_fr = gb._fr
+            }
+
+        }
+
+        window.setInterval(showStats, 250)
+    </script>
+    <script>
+
+    </script>
+</body>
+
+</html>
